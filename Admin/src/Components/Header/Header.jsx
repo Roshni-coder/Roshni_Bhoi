@@ -37,7 +37,7 @@ function Header() {
         <div className="flex items-center pl-4 !w-[90%]  lg:p-3  !justify-center gap-2">
           <FaGift className="text-[24px] text-black" />
           <h1 className="text-black text-xl sm:text-[30px] font-bold">
-            GiftNGifts
+            GiftsNGifts
           </h1>
         </div>
 

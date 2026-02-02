@@ -149,6 +149,7 @@ const corsOptions = {
       "https://admin.giftsngifts.in",
       "https://www.seller.giftsngifts.in",
       "https://www.admin.giftsngifts.in",
+      "https://api.giftsngifts.in",
       "http://localhost:5173",
     "http://localhost:5174",
     "http://localhost:5175",

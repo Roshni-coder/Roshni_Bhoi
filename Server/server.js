@@ -138,6 +138,50 @@ app.use(
   })
 );
 
+const corsOptions = {
+  origin(origin, callback) {
+    if (!origin) return callback(null, true);
+
+    const allowedOrigins = [
+      "https://giftsngifts.in",
+      "https://www.giftsngifts.in",
+      "https://seller.giftsngifts.in",
+      "https://admin.giftsngifts.in",
+      "https://www.seller.giftsngifts.in",
+      "https://www.admin.giftsngifts.in",
+      "http://localhost:5173",
+    "http://localhost:5174",
+    "http://localhost:5175",
+    "http://localhost:5176",
+    "http://localhost:7000",
+    "http://127.0.0.1:5173",
+    "http://127.0.0.1:5174"
+    ];
+
+    if (allowedOrigins.includes(origin)) {
+      return callback(null, true);
+    }
+
+    console.error("❌ CORS BLOCKED:", origin);
+    return callback(new Error("Not allowed by CORS"), false);
+  },
+
+  credentials: true,
+  methods: ["GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS"],
+  allowedHeaders: [
+    "Content-Type",
+    "Authorization",
+    "X-Requested-With",
+    "Accept",
+    "Origin"
+  ],
+  exposedHeaders: ["Content-Range", "X-Content-Range"],
+  optionsSuccessStatus: 204
+};
+
+// ✅ NOW apply CORS
+app.use(cors(corsOptions));
+app.options("*", cors(corsOptions));
 /* =========================
    🛡️ SECURITY: RATE LIMITING
    Fixes: Protection vs. Bots, DDoS, Brute-force
@@ -193,6 +237,7 @@ const sensitiveAuthLimiter = rateLimit({
    PARSERS - Route-Specific Payload Limits
    SECURITY: Differentiated limits to prevent payload-based DoS
 ========================= */
+// ✅ CORS FIRST
 
 // Default parser with conservative limit
 app.use(express.json({ limit: "1mb" }));
@@ -226,67 +271,63 @@ app.use(mongoSanitize({
 ========================= */
 const isProduction = process.env.NODE_ENV === 'production';
 
-const allowedOrigins = [
-  // Development origins (only used in non-production)
-  ...(isProduction ? [] : [
-    "http://localhost:5173",
-    "http://localhost:5174",
-    "http://localhost:5175",
-    "http://localhost:5176",
-    "http://localhost:3000",
-    "http://127.0.0.1:5173",
-    "http://127.0.0.1:5174",
-  ]),
-  // Production origins - ALWAYS allowed
-  "https://giftsngifts.in",
-  "https://www.giftsngifts.in",
-  // Add admin/seller subdomains if needed
-  "https://admin.giftsngifts.in",
-  "https://seller.giftsngifts.in",
-  "https://www.admin.giftsngifts.in",
-  "https://www.seller.giftsngifts.in"
-];
+// const allowedOrigins = [
+//   // Development origins (only used in non-production)
+//   ...(isProduction ? [] : [
+//     "http://localhost:5173",
+//     "http://localhost:5174",
+//     "http://localhost:5175",
+//     "http://localhost:5176",
+//     "http://localhost:3000",
+//     "http://127.0.0.1:5173",
+//     "http://127.0.0.1:5174",
+//   ]),
+//   // Production origins - ALWAYS allowed
+//   "https://giftsngifts.in",
+//   "https://www.giftsngifts.in",
+//   // Add admin/seller subdomains if needed
+//   "https://admin.giftsngifts.in",
+//   "https://seller.giftsngifts.in",
+//   "https://www.admin.giftsngifts.in",
+//   "https://www.seller.giftsngifts.in"
+// ];
 
-app.use(
-  cors({
-    origin(origin, callback) {
-      // Allow server-to-server requests (no origin header)
-      if (!origin) return callback(null, true);
+// app.use(
+//   cors({
+//     origin(origin, callback) {
+//       // Allow server-to-server requests (no origin header)
+//       if (!origin) return callback(null, true);
 
-      if (allowedOrigins.includes(origin)) {
-        return callback(null, true);
-      }
+//       if (allowedOrigins.includes(origin)) {
+//         return callback(null, true);
+//       }
 
-      // SECURITY: In production, BLOCK non-whitelisted origins
-      if (isProduction) {
-        console.warn(`🛡️ CORS BLOCKED: Unauthorized origin attempt from ${origin}`);
-        return callback(new Error('CORS policy: Origin not allowed'), false);
-      }
+//       // SECURITY: In production, BLOCK non-whitelisted origins
+//       if (isProduction) {
+//         console.warn(`🛡️ CORS BLOCKED: Unauthorized origin attempt from ${origin}`);
+//         return callback(new Error('CORS policy: Origin not allowed'), false);
+//       }
 
-      // Development only: Allow with warning
-      console.warn(`⚠️ CORS origin not whitelisted (dev mode): ${origin}`);
-      return callback(null, true);
-    },
-    credentials: true,
-    methods: ["GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS"],
-    allowedHeaders: [
-      "Content-Type",
-      "Authorization",
-      "X-Requested-With",
-      "Accept",
-      "Origin"
-    ],
-    exposedHeaders: ["Content-Range", "X-Content-Range"],
-    maxAge: 600, // Cache preflight for 10 minutes
-    optionsSuccessStatus: 204
-  })
-);
+//       // Development only: Allow with warning
+//       console.warn(`⚠️ CORS origin not whitelisted (dev mode): ${origin}`);
+//       return callback(null, true);
+//     },
+//     credentials: true,
+//     methods: ["GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS"],
+//     allowedHeaders: [
+//       "Content-Type",
+//       "Authorization",
+//       "X-Requested-With",
+//       "Accept",
+//       "Origin"
+//     ],
+//     exposedHeaders: ["Content-Range", "X-Content-Range"],
+//     maxAge: 600, // Cache preflight for 10 minutes
+//     optionsSuccessStatus: 204
+//   })
+// );
 
-// Preflight handler
-app.options("*", cors({
-  origin: allowedOrigins,
-  credentials: true
-}));
+
 
 /* =========================
    STATIC FILES

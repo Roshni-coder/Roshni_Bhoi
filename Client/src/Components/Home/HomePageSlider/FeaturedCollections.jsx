@@ -1,16 +1,10 @@
-/**
- * Featured Collections Component
- * Curated product collections like "Best of North East" and "Perfect Gifts Under ₹999"
- * Now fetches REAL products from the database (admin-curated)
- */
 import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import { Swiper, SwiperSlide } from "swiper/react";
 import { Navigation, Autoplay } from "swiper/modules";
-import { HiStar, HiArrowRight } from "react-icons/hi";
+import { HiArrowRight, HiOutlineChevronLeft, HiOutlineChevronRight } from "react-icons/hi";
 import api from "../../../utils/api";
 
-// Swiper Styles
 import "swiper/css";
 import "swiper/css/navigation";
 
@@ -19,36 +13,29 @@ const COLLECTIONS = [
         id: 'best-of-northeast',
         key: 'bestOfNorthEast',
         title: 'Best of North East',
-        subtitle: 'Top-rated authentic crafts',
-        emoji: '⭐',
-        viewAllLink: '/productlist?collection=best-of-northeast'
+        subtitle: 'Authentic mastercraft from the Eight Sisters',
+        emoji: '✨',
+        viewAllLink: '/featured-collection/bestOfNorthEast'
     },
     {
         id: 'under-999',
         key: 'under999',
-        title: 'Perfect Gifts Under ₹999',
-        subtitle: 'Thoughtful gifts for every budget',
-        emoji: '💰',
-        viewAllLink: '/productlist?maxPrice=999'
+        title: 'Gifts Under ₹999',
+        subtitle: 'Thoughtful elegance for every budget',
+        emoji: '🎁',
+        viewAllLink: '/featured-collection/under999'
     }
 ];
 
 function FeaturedCollections() {
-    const [products, setProducts] = useState({
-        bestOfNorthEast: [],
-        under999: []
-    });
+    const [products, setProducts] = useState({ bestOfNorthEast: [], under999: [] });
     const [loading, setLoading] = useState(true);
 
-    useEffect(() => {
-        fetchProducts();
-    }, []);
+    useEffect(() => { fetchProducts(); }, []);
 
     const fetchProducts = async () => {
         try {
-            // Fetch from the new public API that returns admin-curated products
             const response = await api.get('/api/product/home-collections');
-
             if (response.data.success) {
                 setProducts({
                     bestOfNorthEast: response.data.data.bestOfNorthEast || [],
@@ -56,116 +43,74 @@ function FeaturedCollections() {
                 });
             }
         } catch (error) {
-            console.error('Error fetching homepage collections:', error);
-            // Products will remain empty - no fallback to static data
-            setProducts({
-                bestOfNorthEast: [],
-                under999: []
-            });
+            console.error('Error fetching collections:', error);
         } finally {
             setLoading(false);
         }
     };
 
-    // Don't render section if no products in either collection
-    const hasProducts = products.bestOfNorthEast.length > 0 || products.under999.length > 0;
-
-    if (!loading && !hasProducts) {
-        return null; // Don't show section if admin hasn't curated any products
-    }
+    if (!loading && products.bestOfNorthEast.length === 0 && products.under999.length === 0) return null;
 
     return (
-        <section className="py-16 px-4 md:px-8 bg-[#fdfcfb]">
-            <style>
-                {`@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@300;400;500;600&display=swap');`}
-            </style>
-
-            <div className="max-w-7xl mx-auto">
+        <section className="py-16 md:py-24 px-18 bg-[#FDFBF7]">
+            <div className="max-w-[1440px] mx-auto">
                 {COLLECTIONS.map((collection, index) => {
                     const collectionProducts = products[collection.key] || [];
-
-                    // Skip this collection if it has no products
-                    if (!loading && collectionProducts.length === 0) {
-                        return null;
-                    }
+                    if (!loading && collectionProducts.length === 0) return null;
 
                     return (
-                        <div key={collection.id} className={index > 0 ? 'mt-16' : ''}>
-                            {/* Collection Header */}
-                            <div className="flex flex-col md:flex-row md:items-end md:justify-between mb-8">
-                                <div className="flex items-center gap-3 mb-4 md:mb-0">
-                                    <span className="text-3xl">{collection.emoji}</span>
-                                    <div>
-                                        <h2
-                                            style={{ fontFamily: "'Playfair Display', serif" }}
-                                            className="text-2xl md:text-3xl text-[#332a21]"
-                                        >
-                                            {collection.title}
-                                        </h2>
-                                        <p className="text-gray-500 text-sm">{collection.subtitle}</p>
+                        <div key={collection.id} className={index > 0 ? 'mt-20 md:mt-28 ' : ''}>
+                            {/* Header Section */}
+                            <div className="flex flex-col  md:flex-row md:items-end justify-between mb-10 gap-6">
+                                <div className="space-y-3">
+                                    <div className="flex items-center gap-3">
+                                        <span className="h-[1px] w-8 bg-[#C5A059]" />
+                                        <span className="text-[#C5A059] text-[10px] font-black uppercase tracking-[0.3em]">Special Curation</span>
                                     </div>
+                                    <h2 className="text-4xl md:text-5xl font-serif text-[#0F3D2E] leading-tight">
+                                        {collection.title} <span className="text-2xl">{collection.emoji}</span>
+                                    </h2>
+                                    <p className="text-stone-400 font-light italic text-lg">{collection.subtitle}</p>
                                 </div>
-                                <Link
+                                <Link 
                                     to={collection.viewAllLink}
-                                    className="group flex items-center gap-2 text-[#d4af37] hover:underline text-sm font-medium"
+                                    className="group flex items-center gap-3 text-[#0F3D2E] font-black uppercase text-[11px] tracking-widest border-b-2 border-[#C5A059]/20 pb-2 hover:border-[#C5A059] transition-all duration-500"
                                 >
-                                    View All
-                                    <HiArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
+                                    View All <HiArrowRight className="group-hover:translate-x-1 transition-transform" />
                                 </Link>
                             </div>
 
-                            {/* Products Slider */}
-                            <div className="relative group/slider">
-                                {loading ? (
-                                    <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-                                        {[...Array(4)].map((_, i) => (
-                                            <div key={i} className="animate-pulse">
-                                                <div className="bg-gray-200 aspect-square rounded-xl mb-2" />
-                                                <div className="bg-gray-200 h-4 rounded w-3/4 mb-1" />
-                                                <div className="bg-gray-200 h-4 rounded w-1/2" />
-                                            </div>
-                                        ))}
-                                    </div>
-                                ) : (
-                                    <Swiper
-                                        modules={[Navigation, Autoplay]}
-                                        spaceBetween={16}
-                                        slidesPerView={4}
-                                        navigation={{
-                                            nextEl: `.${collection.id}-next`,
-                                            prevEl: `.${collection.id}-prev`,
-                                        }}
-                                        autoplay={{ delay: 5000 + index * 1000, disableOnInteraction: false }}
-                                        breakpoints={{
-                                            0: { slidesPerView: 2 },
-                                            640: { slidesPerView: 3 },
-                                            1024: { slidesPerView: 4 },
-                                        }}
-                                    >
-                                        {collectionProducts.slice(0, 8).map((product, pIndex) => (
-                                            <SwiperSlide key={product._id || pIndex}>
-                                                <ProductCard product={product} />
-                                            </SwiperSlide>
-                                        ))}
-                                    </Swiper>
-                                )}
+                            {/* Slider Area */}
+                            <div className="relative group/slider px-1">
+                                <Swiper
+                                    modules={[Navigation, Autoplay]}
+                                    spaceBetween={16}
+                                    slidesPerView={1.2} // Peek effect on mobile
+                                    navigation={{
+                                        nextEl: `.next-${collection.id}`,
+                                        prevEl: `.prev-${collection.id}`,
+                                    }}
+                                    breakpoints={{
+                                        480: { slidesPerView: 2.2, spaceBetween: 20 },
+                                        768: { slidesPerView: 3, spaceBetween: 24 },
+                                        1280: { slidesPerView: 4, spaceBetween: 30 },
+                                    }}
+                                >
+                                    {loading ? [...Array(4)].map((_, i) => (
+                                        <SwiperSlide key={i}><div className="aspect-[4/5] bg-stone-100 rounded-2xl animate-pulse" /></SwiperSlide>
+                                    )) : collectionProducts.map((p) => (
+                                        <SwiperSlide key={p._id}>
+                                            <ProductCard product={p} />
+                                        </SwiperSlide>
+                                    ))}
+                                </Swiper>
 
-                                {/* Navigation Arrows */}
-                                <button
-                                    className={`${collection.id}-prev absolute left-[-15px] top-1/2 -translate-y-1/2 z-10 
-                                        w-10 h-10 flex items-center justify-center rounded-full bg-white shadow-lg 
-                                        text-[#333] opacity-0 group-hover/slider:opacity-100 transition-all 
-                                        hover:bg-[#d4af37] hover:text-white`}
-                                >
-                                    ‹
+                                {/* Custom Arrows - Desktop Only */}
+                                <button className={`prev-${collection.id} absolute left-[-12px] top-[40%] -translate-y-1/2 z-20 w-12 h-12 rounded-full bg-white shadow-xl flex items-center justify-center text-[#0F3D2E] opacity-0 group-hover/slider:opacity-100 transition-all hover:bg-[#0F3D2E] hover:text-white hidden md:flex border border-stone-100`}>
+                                    <HiOutlineChevronLeft size={22} />
                                 </button>
-                                <button
-                                    className={`${collection.id}-next absolute right-[-15px] top-1/2 -translate-y-1/2 z-10 
-                                        w-10 h-10 flex items-center justify-center rounded-full bg-white shadow-lg 
-                                        text-[#333] opacity-0 group-hover/slider:opacity-100 transition-all 
-                                        hover:bg-[#d4af37] hover:text-white`}
-                                >
-                                    ›
+                                <button className={`next-${collection.id} absolute right-[-12px] top-[40%] -translate-y-1/2 z-20 w-12 h-12 rounded-full bg-white shadow-xl flex items-center justify-center text-[#0F3D2E] opacity-0 group-hover/slider:opacity-100 transition-all hover:bg-[#0F3D2E] hover:text-white hidden md:flex border border-stone-100`}>
+                                    <HiOutlineChevronRight size={22} />
                                 </button>
                             </div>
                         </div>
@@ -176,42 +121,32 @@ function FeaturedCollections() {
     );
 }
 
-// Product Card
 function ProductCard({ product }) {
     return (
-        <Link
-            to={`/products/${product._id}`}
-            className="group block bg-white rounded-xl overflow-hidden shadow-sm hover:shadow-lg transition-all"
-        >
-            <div className="relative aspect-square overflow-hidden">
+        <Link to={`/products/${product._id}`} className="group block h-full">
+            <div className="relative aspect-[4/5] rounded-[1.5rem] overflow-hidden bg-white border border-stone-100 shadow-sm transition-all duration-700 group-hover:shadow-2xl group-hover:shadow-[#C5A059]/10">
                 <img
                     src={product.images?.[0]?.url || '/placeholder.jpg'}
                     alt={product.title}
-                    className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                    className="w-full h-full object-cover transition-transform duration-[2s] group-hover:scale-110"
                 />
                 {product.discount > 0 && (
-                    <span className="absolute top-2 left-2 px-2 py-1 bg-red-500 text-white text-xs rounded-full">
+                    <div className="absolute top-4 left-4 px-3 py-1.5 bg-[#0F3D2E] text-white text-[9px] font-black uppercase tracking-widest rounded-full shadow-lg">
                         {product.discount}% OFF
-                    </span>
-                )}
-            </div>
-            <div className="p-3">
-                <h3 className="text-sm font-medium text-[#332a21] line-clamp-2 mb-1 
-                    group-hover:text-[#d4af37] transition-colors">
-                    {product.title}
-                </h3>
-                <div className="flex items-center gap-2">
-                    <span className="text-[#d4af37] font-bold">₹{product.price}</span>
-                    {product.oldprice > product.price && (
-                        <span className="text-gray-400 text-xs line-through">₹{product.oldprice}</span>
-                    )}
-                </div>
-                {product.rating > 0 && (
-                    <div className="flex items-center gap-1 mt-1 text-xs text-gray-500">
-                        <HiStar className="w-3 h-3 text-yellow-400" />
-                        <span>{product.rating}</span>
                     </div>
                 )}
+            </div>
+            <div className="mt-6 text-center md:text-left px-1">
+                <p className="text-[9px] font-black uppercase tracking-[0.2em] text-[#C5A059] mb-1.5">Heritage Item</p>
+                <h3 className="text-lg font-serif text-[#0F3D2E] line-clamp-1 group-hover:text-[#C5A059] transition-colors duration-300">
+                    {product.title}
+                </h3>
+                <div className="flex items-center justify-center md:justify-start gap-3 mt-2">
+                    <span className="text-xl font-bold text-[#0F3D2E]">₹{product.price?.toLocaleString()}</span>
+                    {product.oldprice > product.price && (
+                        <span className="text-sm text-stone-300 line-through font-light italic">₹{product.oldprice?.toLocaleString()}</span>
+                    )}
+                </div>
             </div>
         </Link>
     );

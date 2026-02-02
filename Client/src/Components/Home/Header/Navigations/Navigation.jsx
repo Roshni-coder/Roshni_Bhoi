@@ -11,9 +11,10 @@ import Search from "./Search";
 import NavCategory from "./NavCategry.jsx";
 import logo from "../../../../assets/roshni/main logo.png";
 
+/* ---------------- Badge: Updated to Coffee Color ---------------- */
 const StyledBadge = styled(Badge)({
   "& .MuiBadge-badge": {
-    backgroundColor: "#C5A059",
+    backgroundColor: "#6F4E37", // Rich Coffee Brown
     color: "#fff",
     fontSize: "10px",
     fontWeight: "900",
@@ -32,20 +33,17 @@ const Navigation = () => {
 
   const userMenuRef = useRef(null);
 
-  // Scroll logic for premium background transition
   useEffect(() => {
     const handleScroll = () => setScrolled(window.scrollY > 20);
     window.addEventListener("scroll", handleScroll);
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
-  // Close menus on route change
   useEffect(() => {
     setMobileMenuOpen(false);
     setUserMenuOpen(false);
   }, [location]);
 
-  // Handle click outside
   useEffect(() => {
     const handleClickOutside = (e) => {
       if (userMenuRef.current && !userMenuRef.current.contains(e.target)) setUserMenuOpen(false);
@@ -56,81 +54,78 @@ const Navigation = () => {
 
   return (
     <>
-      <header className={`fixed top-0 left-0 w-full z-[1000] transition-all duration-500 ${scrolled ? 'translate-y-0' : 'translate-y-0'}`}>
-        {/* Top Accent Line */}
+      <header className="fixed top-0 left-0 w-full z-[1000]">
         <div className="h-[2px] bg-gradient-to-r from-[#0F3D2E] via-[#C5A059] to-[#0F3D2E]" />
 
         <div className={`transition-all duration-300 ${scrolled ? "bg-white/95 backdrop-blur-md shadow-lg" : "bg-white border-b border-gray-50"}`}>
-          <nav className="container mx-auto ">
-            <div className="flex items-center justify-between">
+          <nav className="container mx-auto px-4">
+            <div className="flex items-center justify-between h-16 md:h-20 lg:h-24">
 
-              {/* Left: Mobile Toggle & Desktop Search Trigger (Optional) */}
-              <div className="flex-1 flex items-center lg:hidden">
+              {/* Mobile Toggle */}
+              <div className="lg:hidden flex-1">
                 <button
                   onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-                  className="relative w-10 h-10 flex flex-col justify-center items-center group"
+                  className="w-10 h-10 flex flex-col justify-center items-center group"
                 >
-                  <span className={`block w-6 h-0.5 bg-[#0F3D2E] transition-all duration-300 ${mobileMenuOpen ? 'rotate-45 translate-y-1' : '-translate-y-1'}`} />
-                  <span className={`block w-6 h-0.5 bg-[#0F3D2E] my-0.5 transition-all duration-300 ${mobileMenuOpen ? 'opacity-0' : 'opacity-100'}`} />
-                  <span className={`block w-6 h-0.5 bg-[#0F3D2E] transition-all duration-300 ${mobileMenuOpen ? '-rotate-45 -translate-y-1' : 'translate-y-1'}`} />
+                  <span className={`w-6 h-0.5 bg-[#0F3D2E] transition-all ${mobileMenuOpen ? "rotate-45 translate-y-1" : "-translate-y-1"}`} />
+                  <span className={`w-6 h-0.5 bg-[#0F3D2E] my-0.5 transition-opacity ${mobileMenuOpen ? "opacity-0" : ""}`} />
+                  <span className={`w-6 h-0.5 bg-[#0F3D2E] transition-all ${mobileMenuOpen ? "-rotate-45 -translate-y-1" : "translate-y-1"}`} />
                 </button>
               </div>
 
-              {/* Center/Left: Logo */}
-              <Link to="/" className="flex-shrink-0 lg:mr-20">
-                <img src={logo} alt="GiftsnGifts" className="h-10 md:h-22 w-auto object-contain transition-transform hover:scale-105 duration-300" />
+              {/* Logo - Centered on Mobile, Left on Desktop */}
+              <Link to="/" className="flex-shrink-0">
+                <img src={logo} alt="GiftsnGifts" className="h-10 md:h-14 lg:h-18 w-auto object-contain transition-transform hover:scale-105" />
               </Link>
 
-              {/* Center Desktop: Search Bar */}
-              <div className="hidden lg:block flex-[2] max-w-3xl ">
+              {/* Desktop Search - Hidden on Tablet/Mobile */}
+              <div className="hidden lg:block flex-[2] max-w-2xl px-10">
                 <Search />
               </div>
 
-              {/* Right: Actions */}
-              <div className="flex-1 pl-5 flex items-center justify-end gap-1 md:gap-5">
-                <div className="lg:hidden">
-                  <IconButton onClick={() => navigate('/search-results')} className="!text-[#0F3D2E]"><MdSearch size={26} /></IconButton>
-                </div>
+              {/* Action Icons */}
+              <div className="flex-1 flex items-center justify-end gap-1 md:gap-3">
+                {/* Mobile Search Icon
+                <IconButton onClick={() => navigate('/search-results')} className="lg:hidden !text-[#0F3D2E]">
+                  <MdSearch size={24} />
+                </IconButton> */}
 
-                <NavIcon title="Wishlist" icon={<FiHeart />} to="/wishlist" badgeCount={wishlistItems.length} hideMobile />
-
+                {/* Wishlist & Cart swapped positions as requested */}
+                <NavIcon title="Wishlist" icon={<FiHeart />} to="/wishlist" badgeCount={wishlistItems.length}  />
                 <NavIcon title="Cart" icon={<MdOutlineShoppingCart />} to="/cartlist" badgeCount={cartItems.length} />
 
-                {/* Profile Section */}
-                <div className="relative ml-2 pl-4 border-l border-gray-100 hidden sm:block" ref={userMenuRef}>
+                {/* Desktop Profile Section */}
+                <div ref={userMenuRef} className="relative hidden sm:block pl-4 border-l border-stone-100">
                   {userData ? (
                     <button
                       onClick={() => setUserMenuOpen(!userMenuOpen)}
-                      className="w-10 h-10 rounded-full bg-[#0F3D2E] text-white flex items-center justify-center font-bold text-sm border-2 border-white ring-1 ring-gray-100 shadow-md hover:ring-[#C5A059] transition-all duration-300"
+                      className="w-10 h-10 rounded-full bg-[#0F3D2E] text-white flex items-center justify-center font-bold border-2 border-white shadow-md hover:ring-2 hover:ring-[#C5A059] transition-all"
                     >
                       {userData.name[0].toUpperCase()}
                     </button>
                   ) : (
                     <Button
                       onClick={() => navigate("/login")}
-                      variant="contained"
-                      className="!bg-[#0F3D2E] !text-white !rounded-full !px-6 !py-2.5 !text-[11px] !font-black !tracking-widest !normal-case hover:!bg-[#C5A059] !transition-all shadow-none"
+                      className="!bg-[#0F3D2E] !text-white !rounded-full !px-6 !text-[11px] !font-black !tracking-widest hover:!bg-[#C5A059]"
                     >
                       SIGN IN
                     </Button>
                   )}
 
-                  {/* Desktop Profile Dropdown */}
+                  {/* Dropdown Menu */}
                   {userMenuOpen && (
-                    <div className="absolute right-0 mt-4 w-72 bg-white rounded-[1rem] shadow-[0_20px_50px_rgba(0,0,0,0.15)] border border-gray-50 overflow-hidden animate-in fade-in slide-in-from-top-5 duration-300">
-                      <div className="p-6 bg-[#0F3D2E] text-white">
-                        <p className="text-[10px] text-[#C5A059] font-black uppercase tracking-widest mb-1">{userData?.email}</p>
-                        <p className="text-lg font-serif truncate ">{userData?.name}</p>
+                    <div className="absolute right-0 mt-4 w-64 sm:w-72 bg-white rounded-2xl shadow-2xl border border-stone-100 overflow-hidden z-50 animate-in fade-in zoom-in-95 origin-top-right">
+                      <div className="p-5 bg-stone-900 text-white relative">
+                        <div className="absolute top-0 right-0 w-20 h-20 bg-[#C5A059]/10 rounded-full blur-2xl -mr-10 -mt-10" />
+                        <p className="text-[9px] text-[#C5A059] font-black uppercase tracking-[0.2em] mb-1 opacity-90">{userData?.email}</p>
+                        <p className="font-serif text-lg leading-tight truncate">{userData?.name}</p>
                       </div>
-                      <div className="p-3">
+                      <div className="p-2">
                         <DropdownItem icon={<FiUser />} label="My Profile" to="/myProfile" />
                         <DropdownItem icon={<FiPackage />} label="My Orders" to="/orders" />
-                        <div className="my-2 border-t border-gray-50" />
-                        <button
-                          onClick={logout}
-                          className="w-full flex items-center gap-4 px-5 py-4 text-xs font-black uppercase tracking-widest text-red-500 hover:bg-red-50 rounded-2xl transition-all"
-                        >
-                          <FiLogOut size={18} /> Log Out
+                        <div className="my-2 border-t border-stone-50" />
+                        <button onClick={logout} className="group w-full flex items-center gap-3 px-4 py-3 text-[11px] font-black uppercase tracking-widest text-red-500 hover:bg-red-50 rounded-xl transition-all">
+                          <FiLogOut className="text-lg group-hover:scale-110 transition-transform" /> Log Out
                         </button>
                       </div>
                     </div>
@@ -140,105 +135,46 @@ const Navigation = () => {
             </div>
           </nav>
 
-          {/* Secondary Nav: Categories (Hidden on Scroll or Mobile) */}
-          <div className={`hidden lg:block transition-all duration-300 ${scrolled ? 'h-0 opacity-0 overflow-hidden' : 'h-auto opacity-100'}`}>
+          {/* Sub-navigation categories: Hidden on scroll */}
+          <div className={`hidden lg:block transition-all duration-500 ${scrolled ? "max-h-0 opacity-0 overflow-hidden" : "max-h-20 opacity-100"}`}>
             <NavCategory />
           </div>
         </div>
       </header>
 
-      {/* --- MOBILE HERITAGE DRAWER --- */}
-      <div className={`fixed inset-0 z-[1100] transition-visibility duration-500 ${mobileMenuOpen ? "visible" : "invisible"}`}>
-        {/* Backdrop */}
-        <div
-          className={`absolute inset-0 bg-black/40 backdrop-blur-sm transition-opacity duration-500 ${mobileMenuOpen ? "opacity-100" : "opacity-0"}`}
-          onClick={() => setMobileMenuOpen(false)}
-        />
-
-        {/* Drawer Content */}
-        <div className={`absolute left-0 top-0 h-full w-[85%] max-w-sm bg-white shadow-2xl transition-transform duration-500 ease-out p-6 flex flex-col ${mobileMenuOpen ? "translate-x-0" : "-translate-x-full"}`}>
-          <div className="flex items-center justify-between mb-8">
-            <img src={logo} alt="Logo" className="h-10 w-auto" />
-            <IconButton onClick={() => setMobileMenuOpen(false)} className="!bg-gray-50"><FiX /></IconButton>
+      {/* --- MOBILE DRAWER --- */}
+      <div className={`fixed inset-0 z-[1100] ${mobileMenuOpen ? "visible" : "invisible"}`}>
+        <div className={`absolute inset-0 bg-stone-900/60 backdrop-blur-sm transition-opacity duration-300 ${mobileMenuOpen ? "opacity-100" : "opacity-0"}`} onClick={() => setMobileMenuOpen(false)} />
+        <div className={`absolute left-0 top-0 h-full w-[85%] max-w-sm bg-white p-6 flex flex-col transition-transform duration-500 ${mobileMenuOpen ? "translate-x-0" : "-translate-x-full"}`}>
+          <div className="flex justify-between items-center mb-8">
+            <img src={logo} className="h-8 w-auto" />
+            <IconButton onClick={() => setMobileMenuOpen(false)} className="!bg-stone-50"><FiX /></IconButton>
           </div>
+          
+          <Search />
 
-          <div className="mb-8">
-            <Search />
-          </div>
-
-          <div className="flex-grow overflow-y-auto space-y-2">
-            <p className="text-[10px] font-black text-[#C5A059] uppercase tracking-[0.2em] mb-4">Explore Heritage</p>
+          <div className="mt-8 space-y-2 flex-grow overflow-y-auto pr-2 no-scrollbar">
             <MobileNavItem label="Home" to="/" />
             <MobileNavItem label="Shop by Occasion" to="/shop-by-occasion" />
-            <MobileNavItem label="Gift Finder Quiz" to="/gift-finder" />
-            <MobileNavItem label="Corporate Gifting" to="/occasion/corporate-gifting" />
+            {/* <MobileNavItem label="Gift Finder Quiz" to="" /> */}
             <MobileNavItem label="Shop by State" to="/stop-by-state" />
-            <MobileNavItem label="All Products" to="/productlist" />
+            <MobileNavItem label="Collection" to="/collection" />
             <MobileNavItem label="Our Artisans" to="/artician" />
-            <MobileNavItem label="Bulk Orders" to="/bulk-quote" />
+            <MobileNavItem label="Corporate Gifting" to="/bulk-quote" />
           </div>
 
-          {/* Mobile Footer (Account) */}
-          <div className="mt-auto pt-8 px-2 border-t border-stone-100 bg-[#FDFBF7]/50">
+          <div className="mt-auto pt-6 border-t border-stone-100">
             {userData ? (
-              <div className="space-y-4">
-                {/* User Profile Summary */}
-                <div className="flex items-center gap-4 mb-6 p-3 bg-white rounded-2xl border border-stone-100 shadow-sm">
-                  <div className="relative">
-                    <div className="w-12 h-12 rounded-full bg-[#1A3A32] text-white flex items-center justify-center font-serif text-lg font-bold ring-2 ring-[#C5A059]/30 ring-offset-2">
-                      {userData.name[0]}
-                    </div>
-                    <div className="absolute -bottom-1 -right-1 w-4 h-4 bg-green-500 border-2 border-white rounded-full"></div>
-                  </div>
-
-                  <div className="flex-grow">
-                    <p className="text-sm font-serif font-bold text-[#1A3A32] leading-tight">
-                      {userData.name}
-                    </p>
-                    <div className="inline-flex items-center gap-1.5 mt-1 px-2 py-0.5 bg-[#C5A059]/10 rounded-md border border-[#C5A059]/20">
-                      <span className="w-1 h-1 rounded-full bg-[#C5A059]"></span>
-                      <p className="text-[10px] font-bold text-[#C5A059] uppercase tracking-widest">
-                        Patron Member
-                      </p>
-                    </div>
-                  </div>
-                </div>
-
-                {/* Navigation Actions */}
-                <div className="grid grid-cols-1 gap-2">
-                  <Button
-                    fullWidth
-                    onClick={() => navigate('/myProfile')}
-                    className="!justify-start !text-[#1A3A32] !normal-case !font-bold !py-3 !px-4 !rounded-xl hover:!bg-white !transition-all"
-                  >
-                    <FiUser className="mr-3 text-[#C5A059]" size={18} />
-                    Account Settings
-                  </Button>
-
-                  <Button
-                    fullWidth
-                    onClick={logout}
-                    className="!justify-start !text-stone-500 hover:!text-red-600 !normal-case !font-semibold !py-3 !px-4 !rounded-xl hover:!bg-red-50 !transition-all"
-                  >
-                    <FiLogOut className="mr-3" size={18} />
-                    Sign Out
-                  </Button>
-                </div>
+              <div className="space-y-3">
+                <MobileNavItem label="Account Dashboard" to="/myProfile" />
+                <button onClick={logout} className="w-full flex items-center justify-center gap-3 py-4 rounded-xl bg-red-50 text-red-600 font-bold text-sm">
+                  <FiLogOut /> Sign Out
+                </button>
               </div>
             ) : (
-              <div className="p-2">
-                <Button
-                  fullWidth
-                  variant="contained"
-                  onClick={() => navigate('/login')}
-                  className="!bg-[#1A3A32] !rounded-xl !py-4 !font-bold !tracking-[0.2em] !shadow-lg !shadow-[#1A3A32]/10 hover:!bg-[#C5A059] !transition-all"
-                >
-                  SIGN IN
-                </Button>
-                <p className="text-center text-[11px] text-stone-400 mt-4 italic">
-                  Join our community of heritage lovers
-                </p>
-              </div>
+              <Button fullWidth onClick={() => navigate("/login")} className="!bg-[#1A3A32] !text-white !rounded-xl !py-4 !font-black !tracking-widest shadow-xl shadow-green-900/20">
+                SIGN IN
+              </Button>
             )}
           </div>
         </div>
@@ -247,36 +183,34 @@ const Navigation = () => {
   );
 };
 
-const NavIcon = ({ icon, title, to, badgeCount, onClick, mobileOnly, hideMobile }) => (
-  <div className={`${mobileOnly ? 'md:hidden' : ''} ${hideMobile ? 'hidden lg:block' : ''}`}>
+/* ---------------- Helper Components ---------------- */
+
+const NavIcon = ({ icon, title, to, badgeCount, hideMobile }) => (
+  <div className={hideMobile ? "hidden lg:block" : ""}>
     <Tooltip title={title}>
-      {to ? (
-        <Link to={to}>
-          <IconButton className="!text-gray-800 hover:!bg-[#F9F7F2] hover:!text-[#C5A059] !p-2 md:!p-3 transition-all duration-300">
-            <StyledBadge badgeContent={badgeCount}>{React.cloneElement(icon, { size: 24 })}</StyledBadge>
-          </IconButton>
-        </Link>
-      ) : (
-        <IconButton onClick={onClick} className="!text-gray-800 hover:!bg-[#F9F7F2] !p-2 md:!p-3 transition-all duration-300">
-          {React.cloneElement(icon, { size: 24 })}
+      <Link to={to}>
+        <IconButton className="!text-stone-800 hover:!bg-stone-50">
+          <StyledBadge badgeContent={badgeCount}>
+            {React.cloneElement(icon, { size: 22 })}
+          </StyledBadge>
         </IconButton>
-      )}
+      </Link>
     </Tooltip>
   </div>
 );
 
 const DropdownItem = ({ icon, label, to }) => (
-  <Link to={to} className="flex items-center justify-between px-5 py-4 text-xs font-bold uppercase tracking-widest text-gray-600 hover:bg-[#F9F7F2] hover:text-[#0F3D2E] rounded-2xl transition-all group">
-    <div className="flex items-center gap-4">
-      <span className="text-xl text-gray-300 group-hover:text-[#C5A059] transition-colors">{icon}</span>
+  <Link to={to} className="group flex justify-between items-center px-4 py-3 text-[11px] font-black uppercase tracking-widest text-stone-600 hover:bg-stone-50 hover:text-stone-900 rounded-xl transition-all">
+    <span className="flex gap-3 items-center">
+      {React.cloneElement(icon, { className: "text-stone-400 group-hover:text-[#C5A059] transition-colors" })}
       {label}
-    </div>
-    <FiChevronRight className="text-gray-300 group-hover:translate-x-1 transition-transform" />
+    </span>
+    <FiChevronRight className="text-stone-300" />
   </Link>
 );
 
 const MobileNavItem = ({ label, to }) => (
-  <Link to={to} className="flex items-center justify-between p-4 bg-gray-50 rounded-2xl text-sm font-bold text-gray-700 hover:bg-[#F9F7F2] hover:text-[#0F3D2E] transition-all">
+  <Link to={to} className="flex justify-between items-center p-4 bg-stone-50 rounded-xl font-bold text-sm text-stone-700 active:bg-stone-100">
     {label}
     <FiChevronRight className="text-[#C5A059]" />
   </Link>

@@ -1,117 +1,131 @@
-import React from 'react';
+import React from "react";
+import { motion } from "framer-motion"; // Optional: for smooth entry animations
 
-// Replace these with your actual local paths
-import imageone from '../../../assets/banner/handmade.png';
-import imagetwo from '../../../assets/banner/weavers.png';
-import imagethree from '../../../assets/banner/calture.png';
-import imagefour from '../../../assets/banner/new.png';
+// Illustration icons
+import imageone from '../../../assets/banner/o.jpg';
+import imagetwo from "../../../assets/banner/t.jpg";
+import imagethree from "../../../assets/banner/f.jpg";
+import imagefour from "../../../assets/banner/r.jpg";
 
 const FeaturesSection = () => {
   const features = [
     {
       title: "Authentic & Handmade",
-      subtitle: "The Artisan's Touch",
-      description: "Master artisans using ancestral techniques to preserve the soul of the craft.",
-      img: imageone
+      subtitle: "Crafted with Care",
+      description: "Made by skilled artisans using traditional techniques — never factory-produced.",
+      img: imageone,
+      num: "01"
     },
     {
-      title: "Direct From Weavers",
-      subtitle: "Fair Trade Legacy",
-      description: "Empowering communities through fair trade for a sustainable future.",
-      img: imagetwo
+      title: "Direct from Artisans",
+      subtitle: "Fair & Ethical",
+      description: "Sourced directly from creators to ensure fair pricing and ethical livelihoods.",
+      img: imagetwo,
+      num: "02"
     },
     {
-      title: "Cultural Heritage",
-      subtitle: "The Eight Sisters",
-      description: "A celebration of tribal identity, weaving stories into every unique gift.",
-      img: imagethree
+      title: "Culturally Rich",
+      subtitle: "Stories in Every Gift",
+      description: "Each product reflects the heritage, culture, and traditions of the North East.",
+      img: imagethree,
+      num: "03"
     },
     {
-      title: "Thoughtful Gifting",
-      subtitle: "Grace Delivered",
-      description: "More than an object—a meaningful connection in a box of North Eastern grace.",
-      img: imagefour
-    }
+      title: "Pan-India Delivery",
+      subtitle: "Safe & Reliable",
+      description: "Secure packaging and dependable delivery across every corner of India.",
+      img: imagefour,
+      num: "04"
+    },
   ];
 
   return (
-    <section className="pt-6 bg-[#fdfcfb] px-6 relative overflow-hidden">
-      {/* Texture Overlay */}
-      <div className="absolute inset-0 opacity-[0.03] pointer-events-none bg-[url('https://www.transparenttextures.com/patterns/natural-paper.png')]" />
-      
+    <section className="py-20 bg-[#FDFBF7] px-4 sm:px-6 lg:px-8 relative overflow-hidden">
+      {/* Premium Background Elements */}
+      <div className="absolute inset-0 opacity-[0.04] pointer-events-none bg-[url('https://www.transparenttextures.com/patterns/natural-paper.png')]" />
+      <div className="absolute -top-24 -right-24 w-96 h-96 bg-[#C5A059]/5 rounded-full blur-3xl" />
+      <div className="absolute -bottom-24 -left-24 w-96 h-96 bg-[#0F3D2E]/5 rounded-full blur-3xl" />
+
       <div className="max-w-7xl mx-auto relative z-10">
-        
-        {/* Compact Editorial Header */}
-        <div className="flex flex-col items-center mb-16 text-center">
-          <div className="flex items-center gap-3 mb-4">
-            <div className="w-8 h-[1px] bg-[#d4af37]/50" />
-            <span className="text-[#d4af37] text-[10px] uppercase tracking-[0.5em] font-bold">
-              The Promise
+        {/* Header Section */}
+        <div className="max-w-3xl mx-auto text-center mb-20">
+          <div className="flex items-center justify-center gap-4 mb-6">
+            <span className="h-[1px] w-12 bg-[#C5A059]/40" />
+            <span className="text-[#C5A059] text-[11px] font-black uppercase tracking-[0.3em]">
+              Our Ethical Promise
             </span>
-            <div className="w-8 h-[1px] bg-[#d4af37]/50" />
+            <span className="h-[1px] w-12 bg-[#C5A059]/40" />
           </div>
-          <h2 className="text-4xl md:text-5xl font-serif text-[#2a241e] mb-4">
-            Why North East Gifts?
+          
+          <h2 className="text-4xl md:text-5xl lg:text-6xl font-serif text-[#0F3D2E] leading-tight mb-6">
+            Why <span className="italic text-[#C5A059]">Gifts</span> from North East?
           </h2>
-          <p className="text-[#6b5a4c] text-base max-w-lg mx-auto font-serif italic opacity-75">
-            "Authenticity in every thread, legacy in every gift."
+          
+          <p className="text-[#6b5a4c] text-lg font-light leading-relaxed opacity-80 italic">
+            "Connecting you to the soulful craftsmanship of our ancestors through conscious gifting."
           </p>
         </div>
 
-        {/* Refined Small Grid */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-12 lg:gap-8">
+        {/* Features Grid */}
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 lg:gap-6">
           {features.map((feature, index) => (
-            <div key={index} className="group flex flex-col items-center text-center">
-              
-              {/* Circular Artisan Image */}
-              <div className="relative mb-8">
-                {/* Background Decorative Ring */}
-                <div className="absolute inset-0 -m-2 border border-[#d4af37]/10 rounded-full transition-transform duration-700 group-hover:scale-110" />
+            <div
+              key={index}
+              className="group relative bg-white p-8 rounded-[2rem] border border-stone-100 shadow-[0_10px_30px_-15px_rgba(0,0,0,0.05)] hover:shadow-[0_20px_40px_-15px_rgba(197,160,89,0.15)] transition-all duration-500 hover:-translate-y-2 flex flex-col items-center"
+            >
+              {/* Floating Number Label */}
+              <span className="absolute top-6 right-8 font-serif text-4xl text-[#C5A059]/10 font-bold group-hover:text-[#C5A059]/20 transition-colors">
+                {feature.num}
+              </span>
+
+              {/* Image Container with Custom Shape */}
+              <div className="relative mb-8 w-32 h-32 md:w-36 md:h-36">
+                <div className="absolute inset-0 bg-gradient-to-br from-[#C5A059]/20 to-transparent rounded-full scale-110 group-hover:rotate-45 transition-transform duration-700" />
                 
-                {/* Image Container */}
-                <div className="relative w-40 h-40 overflow-hidden rounded-full border-4 border-white shadow-sm">
-                  <img 
-                    src={feature.img} 
+                <div className="relative w-full h-full rounded-full overflow-hidden border-4 border-white shadow-md bg-stone-50">
+                  <img
+                    src={feature.img}
                     alt={feature.title}
-                    className="w-full h-full object-cover transition-transform duration-1000 ease-in-out group-hover:scale-115"
+                    className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
                   />
-                  {/* Soft Color Filter */}
-                  <div className="absolute inset-0 bg-[#b39055]/5 group-hover:bg-transparent transition-colors duration-500" />
                 </div>
 
-                {/* Floating Badge (Centered Bottom) */}
-                <div className="absolute -bottom-2 left-1/2 -translate-x-1/2 whitespace-nowrap">
-                   <div className="bg-white px-3 py-1 shadow-md border border-[#f4f1ee]">
-                      <span className="text-[9px] uppercase tracking-tighter text-[#d4af37] font-bold">
-                        {feature.subtitle}
-                      </span>
-                   </div>
+                {/* Subtitle Badge */}
+                <div className="absolute -bottom-2 left-1/2 -translate-x-1/2 z-20">
+                  <div className="bg-[#0F3D2E] text-white px-4 py-1.5 rounded-full shadow-lg border border-white/10 scale-90 md:scale-100">
+                    <span className="text-[9px] font-bold uppercase tracking-widest block whitespace-nowrap">
+                      {feature.subtitle}
+                    </span>
+                  </div>
                 </div>
               </div>
 
               {/* Text Content */}
-              <div className="max-w-[240px]">
-                <h3 className="text-lg font-serif text-[#2a241e] mb-3 group-hover:text-[#b39055] transition-colors duration-300">
+              <div className="text-center mt-4">
+                <h3 className="text-xl font-serif text-[#0F3D2E] mb-4 group-hover:text-[#C5A059] transition-colors">
                   {feature.title}
                 </h3>
-                <p className="text-[#6b5a4c] text-xs leading-relaxed font-light opacity-90 mb-4">
+                
+                <p className="text-[#6b5a4c] text-sm leading-relaxed font-light opacity-80 min-h-[60px]">
                   {feature.description}
                 </p>
-                
-                {/* Minimalist Centered Divider */}
-                <div className="flex justify-center">
-                  <div className="w-6 h-[1.5px] bg-[#d4af37]/30 group-hover:w-12 transition-all duration-500" />
+
+                {/* Decorative Line */}
+                <div className="mt-6 flex justify-center">
+                  <div className="h-[2px] w-8 bg-[#C5A059]/30 rounded-full group-hover:w-16 transition-all duration-500" />
                 </div>
               </div>
-
             </div>
           ))}
         </div>
 
-        {/* Footer Detail */}
-        <div className="mt-16 flex justify-center opacity-20">
-            <div className="w-1.5 h-1.5 rotate-45 bg-[#d4af37]" />
-        </div>
+        {/* Closing Detail */}
+        {/* <div className="mt-20 flex flex-col items-center gap-4">
+          <div className="w-10 h-[1px] bg-[#C5A059]/20" />
+          <p className="text-[10px] text-[#C5A059] font-black uppercase tracking-[0.5em]">
+            Tradition Redefined
+          </p>
+        </div> */}
       </div>
     </section>
   );

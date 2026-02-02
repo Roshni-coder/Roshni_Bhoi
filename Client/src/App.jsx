@@ -93,6 +93,8 @@ import WhatsAppButton from "./Components/WhatsAppButton/WhatsAppButton.jsx";
 
 // Trust Bar
 import TrustBar from "./Components/Home/TrustBar/TrustBar.jsx";
+import ShopByStatePage from "./Components/Home/HomePageSlider/StateSliderPage.jsx";
+import CollectionDetailsPage from "./Components/Home/HomePageSlider/CollectionDetailsPage.jsx";
 
 function App() {
   return (
@@ -101,7 +103,7 @@ function App() {
       <Header />
 
       {/* PERFORMANCE: Suspense wrapper for lazy-loaded routes */}
-      <main className="pt-[70px] lg:pt-[140px] ">
+      <main className="pt-[70px] lg:pt-[130px] ">
         <Suspense fallback={<Loading />}>
           <Routes>
             <Route path="/" exact={true} element={<Home />} />
@@ -132,10 +134,10 @@ function App() {
             <Route path="/bulk-orders" element={<BulkOrders />} />
             <Route path="/refund-policy" element={<RefundPlicy />} />
             <Route path="/reset-password" element={<Reset_pass />} />
-            <Route path="/stop-by-state" element={<StateSlider />} />
+            <Route path="/stop-by-state" element={<ShopByStatePage />} />
             <Route path="/collection" element={<CollectionPage />} />
             <Route path="/artician" element={<ArtisanStorySection />} />
-
+<Route path="/featured-collection/:type" element={<CollectionDetailsPage />} />
             {/* Shop by Occasion Routes */}
             <Route path="/shop-by-occasion" element={<ShopByOccasionPage />} />
             <Route path="/occasion/:slug" element={<OccasionLandingPage />} />

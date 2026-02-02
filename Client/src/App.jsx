@@ -211,14 +211,19 @@ function App() {
       <TrustBar />
 
       <Footer />
+    
+    <WhatsAppButton />
 
-      {/* PERFORMANCE: Chatbot loaded lazily after main content */}
-      <Suspense fallback={null}>
-        <ChatWidget />
-      </Suspense>
+{/* Chatbot above WhatsApp */}
+<Suspense fallback={null}>
+  <div className="fixed bottom-20 right-4 z-[9999]">
+    <ChatWidget />
+  </div>
+</Suspense>
+
 
       {/* WhatsApp Support Button */}
-      <WhatsAppButton />
+      
     </ErrorBoundary>
   );
 }

@@ -27,7 +27,7 @@ function CollectionPage() {
         {/* Dynamic Page Header */}
         <div className="flex flex-col md:flex-row md:items-end justify-between border-b border-stone-200 pb-8 gap-6">
           <div className="max-w-2xl">
-            <h1 className="text-5xl md:text-7xl font-serif text-[#0F3D2E] leading-tight capitalize">
+            <h1 className="text-3xl md:text-7xl font-serif text-[#0F3D2E] leading-tight capitalize">
               {currentCategory || "View All Products"}
             </h1>
             <p className="text-stone-500 mt-4 font-light italic text-lg leading-relaxed">

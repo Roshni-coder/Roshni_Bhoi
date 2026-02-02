@@ -94,7 +94,7 @@ const ProductInfoSection = ({
                         {product.brand}
                     </span>
                 )}
-                <h1 className="font-serif text-[#322619] text-3xl sm:text-3xl font-bold leading-tight mb-3">
+                <h1 className="font-serif text-[#322619] text-xl sm:text-3xl font-bold leading-tight mb-3">
                     {product.title}
                 </h1>
                 {/* Golden Line like the Banner */}
@@ -149,17 +149,17 @@ const ProductInfoSection = ({
                 </div>
 
                 <div className="flex items-baseline gap-4">
-                    <span className="text-4xl font-serif font-black text-[#322619]">
+                    <span className="text-2xl font-serif font-black text-[#322619]">
                         ₹{product.price?.toLocaleString()}
                     </span>
                     {product.oldprice > product.price && (
-                        <span className="text-lg text-[#544231]/50 line-through decoration-[#B58D2F]/40">
+                        <span className="text-md sm:text-lg text-[#544231]/50 line-through decoration-[#B58D2F]/40">
                             ₹{product.oldprice?.toLocaleString()}
                         </span>
                     )}
                 </div>
-                <p className="text-[11px] text-[#544231] font-bold mt-3 uppercase tracking-widest flex items-center gap-2">
-                    <span className="w-2 h-2 bg-emerald-500 rounded-full animate-pulse"></span>
+                <p className="text-[6px] text-[#544231] font-bold mt-3 uppercase tracking-widest flex items-center gap-2">
+                    <span className="w-1 h-1 bg-emerald-500 rounded-full animate-pulse"></span>
                     Save ₹{savings.toLocaleString()} on this handcrafted piece
                 </p>
             </div>

@@ -371,7 +371,7 @@ function ProductDetail() {
   if (!product) {
     return (
       <div className="flex flex-col justify-center items-center min-h-screen">
-        <div className="text-center max-w-md ">
+        <div className="text-center max-w-md px-6">
           <div className="w-32 h-32 mx-auto mb-6 bg-gradient-to-br from-gray-200 to-gray-300 rounded-full flex items-center justify-center shadow-lg">
             <HiShoppingCart className="w-16 h-16 text-gray-400" />
           </div>

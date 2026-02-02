@@ -37,7 +37,7 @@ function PaymentSuccess() {
   );
 
   return (
-    <div className="flex items-center justify-center bg-[#fcfcf9] p-4">
+    <div className="flex items-center mt-4 justify-center bg-[#fcfcf9] p-4">
       <div className="max-w-md w-full bg-white rounded-[3rem] shadow-2xl border border-[#EDE3D2] p-10 text-center relative overflow-hidden">
         {verificationStatus === 'success' ? (
           <>

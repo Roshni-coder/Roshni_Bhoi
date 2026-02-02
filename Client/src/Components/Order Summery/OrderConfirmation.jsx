@@ -84,7 +84,7 @@ function OrderConfirmation() {
     const { orderId, orderDetails } = orderData;
 
     return (
-        <div className="min-h-screen bg-gradient-to-b from-emerald-50 via-white to-amber-50/20 py-8 px-4">
+        <div className="min-h-screen bg-gradient-to-b mt-2 from-emerald-50 via-white to-amber-50/20 py-8 px-4">
             <div className="max-w-4xl mx-auto">
                 {/* Success Header */}
                 <motion.div

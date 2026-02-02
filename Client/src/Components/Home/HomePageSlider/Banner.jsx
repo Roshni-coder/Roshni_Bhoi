@@ -12,6 +12,7 @@ import one from "../../../assets/newimage/banne.jpg";
 import bannerone from "../../../assets/newimage/one.jpg";
 import two from "../../../assets/newimage/unnamed.jpg";
 import four from "../../../assets/newimage/four.jpg";
+import { Link } from "react-router-dom";
 
 const slides = [
   { img: one },
@@ -101,6 +102,7 @@ function Banner() {
                   ">
 
                     {/* Gold Button */}
+                    <Link to="/collection">
                     <button
                       className="
                         bg-[#C6A75E]
@@ -116,7 +118,9 @@ function Banner() {
                     >
                       Shop Handcrafted Gifts
                     </button>
+                    </Link>
 
+<Link to="/artician">
                     {/* Cream Button */}
                     <button
                       className="
@@ -133,7 +137,7 @@ function Banner() {
                     >
                       Meet Our Artisans
                     </button>
-
+</Link>
                   </div>
                 </div>
               </div>

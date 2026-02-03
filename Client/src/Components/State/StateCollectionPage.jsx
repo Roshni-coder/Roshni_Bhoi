@@ -100,7 +100,7 @@ function StateCollectionPage() {
                         {stateData?.description || `Discover authentic handcrafted products from the artisans of ${stateName}`}
                     </p>
 
-                    {/* Highlights */}
+                    {/* Highlights
                     {stateData?.highlights && (
                         <div className="flex flex-wrap gap-3">
                             {stateData.highlights.map((highlight, index) => (
@@ -112,7 +112,7 @@ function StateCollectionPage() {
                                 </span>
                             ))}
                         </div>
-                    )}
+                    )} */}
 
                     {/* Stats */}
                     <div className="mt-8 flex gap-8">
@@ -129,7 +129,7 @@ function StateCollectionPage() {
             </section>
 
             {/* Filters Bar */}
-            <section className="py-4 px-4 md:px-8 bg-white border-b border-gray-100 sticky top-[70px] lg:top-[140px] z-20">
+            <section className="py-4 px-4 md:px-8 bg-white border-b border-gray-100   z-20">
                 <div className="max-w-7xl mx-auto flex items-center justify-between">
                     <p className="text-gray-600">
                         <span className="font-medium">{pagination.total}</span> products found

@@ -136,7 +136,7 @@ function Footer() {
       <div className="bg-stone-50 border-t border-stone-100 py-8">
         <div className="container mx-auto px-4 flex flex-col md:flex-row justify-between items-center gap-6">
           <p className="text-[10px] text-stone-400 font-bold uppercase tracking-widest text-center md:text-left">
-            © 2026 GiftsnGifts • Handcrafted with love in North East India
+            © 2026 GiftsnGifts • Handcrafted with love from North East India
           </p>
           <div className="flex items-center gap-6 opacity-40 grayscale hover:opacity-80 transition-all duration-700">
             <p className="text-[9px] font-black text-stone-400 uppercase tracking-widest border-r border-stone-200 pr-6 hidden sm:block">Safe Payments</p>

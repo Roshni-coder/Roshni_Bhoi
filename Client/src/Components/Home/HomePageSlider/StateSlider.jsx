@@ -161,23 +161,21 @@ function StateSlider() {
                     <div className="absolute bottom-4 left-4 right-4 p-4 rounded-xl backdrop-blur-md bg-white/10 border border-white/20 transition-transform group-hover/card:-translate-y-2">
                       <h3
                         style={{ fontFamily: "'Playfair Display', serif" }}
-                        className="text-lg sm:text-xl text-white mb-2"
+                        className="text-lg sm:text-md font-bold text-white mb-2"
                       >
                         {state.name}
                       </h3>
 
-                      <span
+                      {/* <span
                         style={{ fontFamily: "'Plus Jakarta Sans', sans-serif" }}
                         className="block text-gray-200 uppercase tracking-widest text-[10px] line-clamp-1"
                       >
                         {state.famousFor || state.shortDescription}
-                      </span>
+                      </span> */}
 
                       <div className="flex justify-between items-center mt-2">
-                        <span className="text-[10px] text-white/80 uppercase tracking-widest">
-                          {state.productCount > 0
-                            ? `${state.productCount} Products`
-                            : "Explore Collection"}
+                        <span className="text-[10px]  text-white/80 uppercase tracking-widest">
+                           {state.famousFor || state.shortDescription}
                         </span>
                         <span className="text-white text-lg transition-transform group-hover/card:translate-x-1">
                           →

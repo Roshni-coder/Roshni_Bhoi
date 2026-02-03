@@ -90,7 +90,7 @@ function ShopByOccasion() {
                   <div className="absolute bottom-4 left-4 right-4 p-4 rounded-xl backdrop-blur-md bg-white/10 border border-white/20 transition-transform duration-500 group-hover/card:-translate-y-2">
                     <h3
                       style={{ fontFamily: "'Playfair Display', serif" }}
-                      className="text-lg sm:text-xl text-white mb-1"
+                      className="text-lg sm:text-md font-bold text-white mb-1"
                     >
                       {item.name}
                     </h3>

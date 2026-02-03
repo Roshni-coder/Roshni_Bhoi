@@ -612,7 +612,7 @@ export const getHomePageCollections = async (req, res) => {
       isAvailable: true
     })
       .select('title price oldprice discount images rating reviewCount state')
-      .limit(8)
+      .limit()
       .lean();
 
     res.status(200).json({

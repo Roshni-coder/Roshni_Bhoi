@@ -304,44 +304,96 @@ function OrderSummery() {
           {/* Main Content */}
           <div className="lg:w-[70%] space-y-6">
 
-            {/* 1. Delivery Address Card */}
-            <Paper elevation={0} className="border border-gray-200 p-6 rounded-xl">
-              <div className="flex justify-between items-start mb-4">
-                <h3 className="flex items-center gap-2 font-bold text-gray-700">
-                  <HiOutlineLocationMarker className="text-[#7d0492]" /> Delivery Address
-                </h3>
-                <Button
-                  size="small"
-                  onClick={() => navigate("/addaddress")}
-                  className="!text-[#7d0492] !font-bold"
-                >
-                  Change
-                </Button>
-              </div>
+           <Paper 
+  elevation={0} 
+  className="relative bg-white border border-[#EDE3D2] p-6 sm:p-8 rounded-[2rem] transition-all"
+>
+  {/* Card Header */}
+  <div className="flex justify-between items-center mb-6">
+    <div className="flex flex-col">
+      <h3 className="flex items-center gap-2 font-serif text-xl font-bold text-[#322619]">
+        <HiOutlineLocationMarker className="text-[#B58D2F] text-2xl" /> 
+        Delivery Destination
+      </h3>
+      <div className="w-12 h-0.5 bg-[#B58D2F] mt-1"></div>
+    </div>
+    
+    {address && !addressError && (
+      <Button
+        size="small"
+        onClick={() => navigate("/addaddress")}
+        className="!text-[#B58D2F] !text-[11px] !font-black !uppercase !tracking-widest !rounded-full hover:!bg-[#FDFBF7]"
+      >
+        Change
+      </Button>
+    )}
+  </div>
 
-              {addressError ? (
-                <div className="text-red-500 text-sm">
-                  <p className="italic">{addressError}</p>
-                  <Button
-                    size="small"
-                    variant="outlined"
-                    onClick={() => navigate("/addaddress")}
-                    className="!mt-2"
-                  >
-                    Add Address
-                  </Button>
-                </div>
-              ) : address ? (
-                <div className="text-sm text-gray-600">
-                  <p className="font-bold text-gray-900 mb-1">{address.fullName}</p>
-                  <p>{address.address}</p>
-                  <p>{address.city}, {address.state} - {address.pin}</p>
-                  <p className="mt-2 font-medium">Phone: {address.phoneNumber}</p>
-                </div>
-              ) : (
-                <p className="text-red-500 text-sm italic">No address selected. Please go back.</p>
-              )}
-            </Paper>
+  {/* Conditional Content Rendering */}
+  <div className="min-h-[100px] flex items-center">
+    {addressError ? (
+      /* --- ERROR STATE --- */
+      <div className="w-full bg-red-50/50 border border-red-100 p-4 rounded-2xl flex flex-col items-center text-center">
+        <p className="text-red-600 text-sm font-medium italic mb-3">
+          {addressError}
+        </p>
+        <Button
+          size="small"
+          variant="contained"
+          onClick={() => navigate("/addaddress")}
+          className="!bg-red-600 !text-white !rounded-full !px-6 !text-[10px] !font-bold"
+        >
+          Fix Address
+        </Button>
+      </div>
+
+    ) : address ? (
+      /* --- ADDRESS DISPLAY STATE --- */
+      <div className="w-full">
+        <div className="flex flex-col gap-1">
+          <p className="font-serif text-lg font-bold text-[#322619] mb-1 capitalize">
+            {address.fullName}
+          </p>
+          
+          <div className="space-y-0.5">
+            <p className="text-sm text-[#544231]/80 leading-relaxed font-medium">
+              {address.address}
+            </p>
+            <p className="text-sm text-[#544231]/80 font-medium">
+              {address.city}, {address.state} — 
+              <span className="font-bold text-[#322619] ml-1">{address.pin}</span>
+            </p>
+          </div>
+
+          <div className="mt-4 pt-4 border-t border-dashed border-[#EDE3D2] flex items-center gap-4">
+            <div className="flex justify-center items-center gap-2">
+              <p className="text-sm font-bold  text-[#322619] tracking-tight">
+               <span className="text-[#B58D2F]">Phone :</span> +91 {address.phoneNumber}
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    ) : (
+      /* --- EMPTY STATE --- */
+      <div className="w-full py-8 border-2 border-dashed border-[#EDE3D2] bg-[#FDFBF7] rounded-2xl flex flex-col items-center text-center px-4">
+        <p className="text-[#544231]/60 text-sm font-serif mb-4">
+          No delivery location selected for this treasure.
+        </p>
+        <Button
+          variant="contained"
+          onClick={() => navigate("/addaddress")}
+          className="!bg-[#322619] !text-white !rounded-full !px-8 !py-2.5 !text-xs !font-bold !shadow-lg"
+        >
+          + Locate Destination
+        </Button>
+      </div>
+    )}
+  </div>
+
+  
+</Paper>
 
             {/* 2. Items List Card */}
             <Paper elevation={0} className="border border-gray-200 rounded-xl overflow-hidden">
@@ -390,33 +442,52 @@ function OrderSummery() {
           </div>
 
           {/* Sidebar (Price Summary) */}
-          <div className="lg:w-[30%]">
-            <div className="sticky top-28 space-y-4">
-              <Totalprice selectedItemIds={selectedItems} />
+          <div className="lg:w-[30%] w-full">
+  <div className="lg:sticky lg:top-28 space-y-6">
 
-              <div className="hidden lg:block">
-                <Button
-                  fullWidth
-                  variant="contained"
-                  onClick={checkoutHandler}
-                  disabled={itemsToBuy.length === 0 || !address || !!addressError || isProcessingPayment}
-                  className="!bg-[#ff9f00] !py-4 !rounded-xl !font-bold !text-lg !shadow-xl hover:!bg-[#e68a00] transition-all transform hover:scale-[1.02]"
-                >
-                  {isProcessingPayment ? (
-                    <span className="flex items-center gap-2">
-                      <CircularProgress size={20} color="inherit" /> Processing...
-                    </span>
-                  ) : (
-                    "Complete Payment"
-                  )}
-                </Button>
-              </div>
+    {/* PRICE SUMMARY CARD */}
+    <div className="bg-white rounded-2xl border border-gray-200 shadow-lg p-5 sm:p-6">
+      <Totalprice selectedItemIds={selectedItems} />
+    </div>
 
-              <p className="text-center text-[11px] text-gray-400 uppercase tracking-widest font-medium">
-                🔒 Secure 256-bit SSL Encrypted Payment
-              </p>
-            </div>
-          </div>
+    {/* PAYMENT CTA */}
+    <div className="bg-white rounded-2xl border border-gray-200 shadow-lg p-4 sm:p-6">
+      <Button
+        fullWidth
+        variant="contained"
+        onClick={checkoutHandler}
+        disabled={
+          itemsToBuy.length === 0 ||
+          !address ||
+          !!addressError ||
+          isProcessingPayment
+        }
+        className="!bg-[#ff9f00] !py-4 !rounded-xl 
+        !font-bold !text-base sm:!text-lg 
+        !shadow-xl hover:!bg-[#e68a00] 
+        transition-all transform hover:scale-[1.02]
+        disabled:!opacity-60 disabled:!scale-100"
+      >
+        {isProcessingPayment ? (
+          <span className="flex items-center justify-center gap-3">
+            <CircularProgress size={20} color="inherit" />
+            Processing Payment…
+          </span>
+        ) : (
+          "Complete Payment"
+        )}
+      </Button>
+
+      {/* TRUST INFO */}
+      <div className="mt-4 flex items-center justify-center gap-2 text-[11px] text-gray-400 uppercase tracking-widest font-medium">
+        <span>🔒</span>
+        <span>Secure 256-bit SSL Encrypted Payment</span>
+      </div>
+    </div>
+
+  </div>
+</div>
+
         </div>
       </div>
     </div>

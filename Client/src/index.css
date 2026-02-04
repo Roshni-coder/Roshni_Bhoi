@@ -29,7 +29,7 @@ p {
 }
 
 ::-webkit-scrollbar-thumb {
-  background: #7d0492;
+  background: #c5a059;
   /* Scrollbar thumb (handle) color */
 }
 
@@ -59,7 +59,7 @@ p {
 }
 
 .btn-org {
-  background: #7d0492 !important;
+  background: #c5a059 !important;
   color: #fff !important;
   font-weight: 500 !important;
   font-size: 14px !important;
@@ -78,15 +78,15 @@ p {
 }
 
 .MuiTabs-indicator {
-  background-color: #7d0492 !important;
+  background-color: #c5a059 !important;
 }
 
 .MuiTab-textColorPrimary.Mui-Selected {
-  color: #7d0492 !important;
+  color: #c5a059 !important;
 }
 
 .MuiBadge-badge {
-  background-color: #7d0492 !important;
+  background-color: #c5a059 !important;
 }
 
 nav ul button {
@@ -109,7 +109,7 @@ footer form input::placeholder {
 
 .css-imrjgg-MuiButtonBase-root-MuiCheckbox-root.Mui-checked,
 .css-imrjgg-MuiButtonBase-root-MuiCheckbox-root.MuiCheckbox-indeterminate {
-  color: #7d0492 !important;
+  color: #c5a059 !important;
 }
 
 .css-19opgx6-MuiFormControlLabel-root .MuiFormControlLabel-label {

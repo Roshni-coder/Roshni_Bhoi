@@ -179,17 +179,28 @@ export const placeorder = async (req, res) => {
       productsToUpdate.push({ product, quantity });
     }
 
-    // Create the order with authenticated userId
+  const normalizedAddress = {
+      name: shippingAddress.name || shippingAddress.fullName || "Recipient",
+      phone: shippingAddress.phone || shippingAddress.phoneNumber || "",
+      alternatephone: shippingAddress.alternatephone || "",
+      address: shippingAddress.address || "",
+      city: shippingAddress.city || "",
+      state: shippingAddress.state || "",
+      pin: Number(shippingAddress.pin || shippingAddress.pincode || 0),
+    };
+
+    // 2. Create the Order
     const newOrder = new orderModel({
-      user: userId, // SECURITY: From auth middleware
+      user: userId,
       items,
       totalAmount,
-      shippingAddress,
+      shippingAddress: normalizedAddress, // Saved using schema keys
       image,
-      paymentId: paymentId || null
+      paymentId: paymentId || null,
     });
 
     await newOrder.save();
+   console.log("📦 ORDER ADDRESS SAVED:", normalizedAddress);
 
     // Deduct stock
     for (const { product, quantity } of productsToUpdate) {
@@ -213,22 +224,23 @@ export const placeorder = async (req, res) => {
  * SECURITY:
  * - Uses req.userId from auth middleware exclusively
  * - IDOR Protection: Users can only see their own orders
+ /**
+ * Get User's Orders
  */
 export const getUserOrders = async (req, res) => {
   try {
-    // SECURITY: Use authenticated userId, NOT from body
-    const userId = req.userId;
+    const userId = req.userId; // Securely from middleware
 
     if (!userId) {
-      return res.status(401).json({
-        success: false,
-        message: "Authentication required"
-      });
+      return res.status(401).json({ success: false, message: "Auth required" });
     }
 
     const orders = await orderModel
-      .find({ user: userId }) // IDOR Protection
-      .populate("items.productId")
+      .find({ user: userId })
+      .populate({
+        path: "items.productId",
+        select: "title images price" // Fetch only necessary product fields
+      })
       .sort({ placedAt: -1 });
 
     res.status(200).json({ success: true, orders });
@@ -239,52 +251,26 @@ export const getUserOrders = async (req, res) => {
 
 /**
  * Get Single Order by ID
- * 
- * SECURITY (IDOR PROTECTION):
- * - Fetches order using BOTH _id AND user
- * - Users can ONLY access their own orders
- * - Validates ObjectId format before query
  */
 export const getOrderById = async (req, res) => {
   try {
     const { id } = req.params;
-
-    // SECURITY: Use authenticated userId
     const userId = req.userId;
 
-    if (!userId) {
-      return res.status(401).json({
-        success: false,
-        message: "Authentication required"
-      });
-    }
-
-    // SECURITY: Validate ObjectId format to prevent injection
     if (!isValidObjectId(id)) {
-      return res.status(400).json({
-        success: false,
-        message: "Invalid order ID format"
-      });
+      return res.status(400).json({ success: false, message: "Invalid ID" });
     }
 
-    // SECURITY: IDOR Protection - Query with BOTH id AND userId
-    // This ensures users can ONLY access their own orders
-    const order = await orderModel.findOne({
-      _id: id,
-      user: userId  // CRITICAL: Ownership check
-    }).populate("items.productId");
+    const order = await orderModel.findOne({ _id: id, user: userId })
+      .populate("items.productId");
 
     if (!order) {
-      // Generic message prevents order enumeration
-      return res.status(404).json({
-        success: false,
-        message: "Order not found"
-      });
+      return res.status(404).json({ success: false, message: "Order not found" });
     }
 
     res.status(200).json({ success: true, order });
   } catch (error) {
-    handleError(res, error, "Failed to fetch order");
+    handleError(res, error, "Failed to fetch order details");
   }
 };
 

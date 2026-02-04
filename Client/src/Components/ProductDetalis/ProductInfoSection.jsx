@@ -131,38 +131,50 @@ const ProductInfoSection = ({
             </div>
 
             {/* Ratings & Price Box */}
-            <div className="mb-10 p-8 bg-[#F9F6F0] rounded-3xl border border-[#EDE3D2] relative overflow-hidden">
-                {/* Rating Badge */}
-                <div className="flex items-center gap-2 mb-4">
-                    <div className="flex bg-white px-3 py-1 rounded-full shadow-sm border border-[#EDE3D2]">
-                        {[1, 2, 3, 4, 5].map((star) => (
-                            <HiStar
-                                key={star}
-                                className={`w-4 h-4 ${star <= Math.round(reviewStats.avgRating) ? 'text-[#B58D2F]' : 'text-gray-200'}`}
-                            />
-                        ))}
-                        <span className="ml-2 text-xs font-bold text-[#322619]">{reviewStats.avgRating}</span>
-                    </div>
-                    <span className="text-xs font-medium text-[#544231] underline cursor-pointer">
-                        {reviewStats.totalReviews} Reviews
-                    </span>
-                </div>
+            <div className="mb-8 sm:mb-10 p-5 sm:p-8 bg-[#F9F6F0] rounded-2xl sm:rounded-3xl border border-[#EDE3D2] relative overflow-hidden">
+  {/* Rating Badge */}
+  <div className="flex flex-wrap items-center gap-2 mb-3 sm:mb-4">
+    <div className="flex items-center bg-white px-3 py-1 rounded-full shadow-sm border border-[#EDE3D2]">
+      {[1, 2, 3, 4, 5].map((star) => (
+        <HiStar
+          key={star}
+          className={`w-4 h-4 ${
+            star <= Math.round(reviewStats.avgRating)
+              ? "text-[#B58D2F]"
+              : "text-gray-200"
+          }`}
+        />
+      ))}
+      <span className="ml-2 text-xs font-bold text-[#322619]">
+        {reviewStats.avgRating}
+      </span>
+    </div>
 
-                <div className="flex items-baseline gap-4">
-                    <span className="text-2xl font-serif font-black text-[#322619]">
-                        ₹{product.price?.toLocaleString()}
-                    </span>
-                    {product.oldprice > product.price && (
-                        <span className="text-md sm:text-lg text-[#544231]/50 line-through decoration-[#B58D2F]/40">
-                            ₹{product.oldprice?.toLocaleString()}
-                        </span>
-                    )}
-                </div>
-                <p className="text-[6px] text-[#544231] font-bold mt-3 uppercase tracking-widest flex items-center gap-2">
-                    <span className="w-1 h-1 bg-emerald-500 rounded-full animate-pulse"></span>
-                    Save ₹{savings.toLocaleString()} on this handcrafted piece
-                </p>
-            </div>
+    <span className="text-xs font-medium text-[#544231] underline cursor-pointer">
+      {reviewStats.totalReviews} Reviews
+    </span>
+  </div>
+
+  {/* Price */}
+  <div className="flex flex-wrap items-end gap-3 sm:gap-4">
+    <span className="text-xl sm:text-2xl font-serif font-black text-[#322619]">
+      ₹{product.price?.toLocaleString()}
+    </span>
+
+    {product.oldprice > product.price && (
+      <span className="text-sm sm:text-lg text-[#544231]/50 line-through decoration-[#B58D2F]/40">
+        ₹{product.oldprice?.toLocaleString()}
+      </span>
+    )}
+  </div>
+
+  {/* Savings */}
+  <p className="mt-3 text-[10px] sm:text-[11px] text-[#544231] font-bold tracking-widest flex items-center gap-2">
+    <span className="w-1.5 h-1.5 bg-emerald-500 rounded-full animate-pulse"></span>
+    Save ₹{savings.toLocaleString()} on this handcrafted piece
+  </p>
+</div>
+
 
             {/* Selectors */}
             {product.size && (
@@ -211,20 +223,30 @@ const ProductInfoSection = ({
             </div>
 
             {/* Heritage Trust Badges */}
-            <div className="grid grid-cols-3 gap-4 py-8 border-t-2 border-dashed border-[#EDE3D2]">
-                <div className="flex flex-col items-center text-center gap-2">
-                    <HiOutlineTruck className="w-6 h-6 text-[#B58D2F]" />
-                    <p className="text-[10px] font-bold text-[#322619] uppercase">Pan India Delivery</p>
-                </div>
-                <div className="flex flex-col items-center text-center gap-2 border-x border-[#EDE3D2]">
-                    <HiOutlineRefresh className="w-6 h-6 text-[#B58D2F]" />
-                    <p className="text-[10px] font-bold text-[#322619] uppercase">Artisan Support</p>
-                </div>
-                <div className="flex flex-col items-center text-center gap-2">
-                    <HiOutlineShieldCheck className="w-6 h-6 text-[#B58D2F]" />
-                    <p className="text-[10px] font-bold text-[#322619] uppercase">Secure Payments</p>
-                </div>
-            </div>
+           {/* Heritage Trust Badges */}
+<div className="grid grid-cols-3 gap-3 sm:gap-4 py-6 sm:py-8 border-t-2 border-dashed border-[#EDE3D2]">
+  <div className="flex flex-col items-center text-center gap-1.5 sm:gap-2">
+    <HiOutlineTruck className="w-5 h-5 sm:w-6 sm:h-6 text-[#B58D2F]" />
+    <p className="text-[9px] sm:text-[10px] font-bold text-[#322619] ">
+      Pan India Delivery
+    </p>
+  </div>
+
+  <div className="flex flex-col items-center text-center gap-1.5 sm:gap-2 border-x border-[#EDE3D2]">
+    <HiOutlineRefresh className="w-5 h-5 sm:w-6 sm:h-6 text-[#B58D2F]" />
+    <p className="text-[9px] sm:text-[10px] font-bold text-[#322619] ">
+      Artisan Support
+    </p>
+  </div>
+
+  <div className="flex flex-col items-center text-center gap-1.5 sm:gap-2">
+    <HiOutlineShieldCheck className="w-5 h-5 sm:w-6 sm:h-6 text-[#B58D2F]" />
+    <p className="text-[9px] sm:text-[10px] font-bold text-[#322619] ">
+      Secure Payments
+    </p>
+  </div>
+</div>
+
         </div>
     );
 };

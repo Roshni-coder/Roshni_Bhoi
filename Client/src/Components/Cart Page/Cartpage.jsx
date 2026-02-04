@@ -58,10 +58,10 @@ function Cartpage() {
         {/* Page Title with Signature Golden Line */}
         <div className="mb-6">
           <div className="flex items-center gap-4 mb-3">
-            <div className="bg-[#B58D2F] p-3 rounded-2xl shadow-lg shadow-[#B58D2F]/20">
+            <div className="bg-[#B58D2F] sm:p-3 p-1 rounded-2xl shadow-lg shadow-[#B58D2F]/20">
               <ShoppingBagOutlinedIcon className="text-white" />
             </div>
-            <h1 className="font-serif text-3xl md:text-4xl font-bold text-[#322619]">Your Shopping Bag</h1>
+            <h1 className="font-serif text-xl md:text-4xl font-bold text-[#322619]">Your Shopping Bag</h1>
           </div>
           <div className="w-24 h-1 bg-[#B58D2F]"></div>
         </div>
@@ -70,7 +70,7 @@ function Cartpage() {
           {/* Left Part: List of Items */}
           <div className="w-full lg:w-[65%]">
             <div className="p-2">
-               <p className="font-sans text-xs font-bold uppercase tracking-[0.2em] text-[#544231]/60 mb-6">
+               <p className="font-sans text-xs font-bold  text-[#544231]/60 mb-6">
                 You have <span className="text-[#B58D2F]">{cartItems.length} items</span> in your cart
               </p>
               
@@ -112,27 +112,37 @@ function Cartpage() {
 
           {/* Right Part: Checkout Summary */}
           <div className="w-full lg:w-[35%] lg:sticky lg:top-28">
-            <div className="bg-white rounded-[2.5rem] shadow shadow-[#322619]/5 border border-[#EDE3D2] p-8">
-              <Totalprice
-                handlePlaceOrder={() => navigate("/addaddress", { state: { selectedItems } })}
-                selectedItemIds={selectedItems}
-              />
-              <Button
-                fullWidth
-                onClick={() => {
-                  if (selectedItems.length === 0) {
-                    toast.warning("Select a piece to continue.");
-                    return;
-                  }
-                  navigate("/addaddress", { state: { selectedItems } });
-                }}
-                disabled={selectedItems.length === 0}
-                className="!mt-8 !bg-[#322619] !text-[#F9F6F0] !py-5 !rounded-full !font-bold !text-sm !tracking-[0.2em] !shadow-2xl hover:!bg-[#B58D2F] !transition-all"
-              >
-                Proceed to Checkout
-              </Button>
-            </div>
-          </div>
+  <div className="bg-white rounded-2xl sm:rounded-[2.5rem] shadow shadow-[#322619]/5 border border-[#EDE3D2] p-5 sm:p-8">
+    
+    <Totalprice selectedItemIds={selectedItems} />
+
+    <Button
+      fullWidth
+      onClick={() => {
+        if (selectedItems.length === 0) {
+          toast.warning("Select a piece to continue.");
+          return;
+        }
+        navigate("/addaddress", { state: { selectedItems } });
+      }}
+      disabled={selectedItems.length === 0}
+      className="!mt-6 sm:!mt-8 
+                 !bg-[#322619] !text-[#F9F6F0] 
+                 !py-4 sm:!py-5 
+                 !rounded-full 
+                 !font-bold 
+                 !text-xs sm:!text-sm 
+                 !tracking-[0.18em] sm:!tracking-[0.2em]
+                 !shadow-2xl 
+                 hover:!bg-[#B58D2F] 
+                 !transition-all"
+    >
+      Proceed to Checkout
+    </Button>
+
+  </div>
+</div>
+
         </div>
       </div>
     </section>

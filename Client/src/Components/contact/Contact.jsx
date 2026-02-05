@@ -99,11 +99,11 @@ const Contact = () => {
             </p>
             <div className="h-px w-12 bg-gray-200"></div>
           </div>
-          <div className="flex justify-center gap-2">
+          {/* <div className="flex justify-center gap-2">
              <span className="w-1.5 h-1.5 rounded-full bg-[#bfa46f]/40"></span>
              <span className="w-1.5 h-1.5 rounded-full bg-[#bfa46f]/70"></span>
              <span className="w-1.5 h-1.5 rounded-full bg-[#bfa46f]"></span>
-          </div>
+          </div> */}
         </div>
       </div>
     </div>

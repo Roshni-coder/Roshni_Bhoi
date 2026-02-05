@@ -51,27 +51,84 @@ const questions = [
         ]
     },
     {
-        id: 'dietary',
-        title: 'Any dietary considerations?',
-        subtitle: 'For food & beverage gifts',
-        options: [
-            { id: 'no-restriction', label: 'No Restrictions', desc: 'All products', icon: '🍽️', color: 'from-green-500 to-emerald-500' },
-            { id: 'vegetarian', label: 'Vegetarian', desc: 'No meat products', icon: '🥬', color: 'from-lime-500 to-green-500' },
-            { id: 'vegan', label: 'Vegan', desc: 'Plant-based only', icon: '🌱', color: 'from-emerald-500 to-teal-500' },
-            { id: 'skip', label: 'Not buying food', desc: 'Skip this', icon: '⏭️', color: 'from-slate-400 to-slate-500' }
-        ]
-    },
+    id: 'collection',
+    title: 'Choose a collection',
+    subtitle: 'Handpicked artisan categories',
+    options: [
+        {
+            id: 'jewellery',
+            label: 'Jewellery',
+            desc: 'Handcrafted & traditional designs',
+            icon: '💍',
+            color: 'from-pink-500 to-rose-500'
+        },
+        {
+            id: 'teaware',
+            label: 'Teaware',
+            desc: 'Cups, kettles & tea accessories',
+            icon: '🍵',
+            color: 'from-amber-500 to-orange-500'
+        },
+        {
+            id: 'bamboo-cane',
+            label: 'Bamboo & Cane',
+            desc: 'Eco-friendly handmade products',
+            icon: '🎋',
+            color: 'from-green-600 to-lime-500'
+        },
+        {
+            id: 'handicrafts',
+            label: 'Handicrafts',
+            desc: 'Artisan-made decor & utilities',
+            icon: '🧺',
+            color: 'from-indigo-500 to-purple-500'
+        },
+        {
+            id: 'skip',
+            label: 'Skip',
+            desc: 'Show all collections',
+            icon: '⏭️',
+            color: 'from-slate-400 to-slate-500'
+        }
+    ]
+}
+,
     {
-        id: 'preference',
-        title: 'What type of gift do you prefer?',
-        subtitle: 'Help us narrow down the perfect match',
-        options: [
-            { id: 'practical', label: 'Practical', desc: 'Useful everyday items', icon: '🛠️', color: 'from-blue-500 to-indigo-500' },
-            { id: 'decorative', label: 'Decorative', desc: 'Beautiful display pieces', icon: '🏺', color: 'from-amber-500 to-orange-500' },
-            { id: 'gourmet', label: 'Gourmet', desc: 'Food & beverages', icon: '🍵', color: 'from-rose-500 to-pink-500' },
-            { id: 'mixed', label: 'Mixed Hampers', desc: 'Best of everything', icon: '🎁', color: 'from-purple-500 to-violet-500' }
-        ]
-    }
+    id: 'preference',
+    title: 'What kind of gift feels right?',
+    subtitle: 'Choose the emotion you want to gift',
+    options: [
+        {
+            id: 'utility-craft',
+            label: 'Everyday Craft',
+            desc: 'Handmade items for daily use',
+            icon: '🧺',
+            color: 'from-blue-600 to-indigo-600'
+        },
+        {
+            id: 'heritage-decor',
+            label: 'Heritage Decor',
+            desc: 'Cultural & artistic pieces',
+            icon: '🏺',
+            color: 'from-amber-600 to-orange-600'
+        },
+        {
+            id: 'artisan-food',
+            label: 'Artisan Gourmet',
+            desc: 'Traditional food & beverages',
+            icon: '🍵',
+            color: 'from-rose-600 to-pink-600'
+        },
+        {
+            id: 'curated-hamper',
+            label: 'Curated Hampers',
+            desc: 'Thoughtfully mixed gift boxes',
+            icon: '🎁',
+            color: 'from-purple-600 to-violet-600'
+        }
+    ]
+}
+
 ];
 
 function GiftFinderQuiz() {

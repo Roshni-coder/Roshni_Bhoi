@@ -47,8 +47,6 @@ const Feedback = lazy(() => import("./Components/Feedback/Feedback.jsx"));
 const SearchResultsPage = lazy(() => import("./Components/Home/Header/Navigations/SearchResultsPage.jsx"));
 const OrderTracking = lazy(() => import("./Components/Home/Header/TopStrip/OrderTracking.jsx"));
 const HelpCenter = lazy(() => import("./Components/Home/Header/TopStrip/HelpCenter.jsx"));
-const ContactUs = lazy(() => import("./Components/Home/Header/TopStrip/ContactUs.jsx"));
-
 // Legal/Info pages (lowest priority, rarely visited)
 const Support_Policy = lazy(() => import("./Components/Home/Footer/Support_Policy.jsx"));
 const TermsAndConditions = lazy(() => import("./Components/Home/Footer/Terms&Condition.jsx"));
@@ -95,6 +93,7 @@ import WhatsAppButton from "./Components/WhatsAppButton/WhatsAppButton.jsx";
 import TrustBar from "./Components/Home/TrustBar/TrustBar.jsx";
 import ShopByStatePage from "./Components/Home/HomePageSlider/StateSliderPage.jsx";
 import CollectionDetailsPage from "./Components/Home/HomePageSlider/CollectionDetailsPage.jsx";
+import Contact from "./Components/contact/Contact.jsx";
 
 function App() {
   return (
@@ -125,7 +124,8 @@ function App() {
             <Route path="/support-policy" element={<Support_Policy />} />
             <Route path="/shipping-info" element={<ShippingInfo />} />
             <Route path="/privacy-policy" element={<PrivacyPolicy />} />
-            <Route path="/contact-us" element={<ContactUs />} />
+            <Route path="/contactus" element={<Contact />} />
+            
             <Route path="/help-center" element={<HelpCenter />} />
             <Route path="/order-tracking" element={<OrderTracking />} />
             <Route path="/terms-of-use" element={<TermsOfUse />} />

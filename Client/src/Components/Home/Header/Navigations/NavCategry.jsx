@@ -9,6 +9,7 @@ const NavCategory = () => {
     { name: 'Collections', path: '/collection' },
     { name: 'Artisans', path: '/artician' },
     { name: 'Corporate Gifting', path: '/bulk-quote' },
+    { name: 'Contact Us', path: '/contactus' },
   ];
 
   return (

@@ -136,7 +136,7 @@ const Navigation = () => {
           </nav>
 
           {/* Sub-navigation categories: Hidden on scroll */}
-          <div className={`hidden lg:block transition-all duration-500 ${scrolled ? "max-h-0 opacity-0 overflow-hidden" : "max-h-20 opacity-100"}`}>
+          <div className={` transition-all duration-500 `}>
             <NavCategory />
           </div>
         </div>

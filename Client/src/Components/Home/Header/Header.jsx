@@ -8,8 +8,6 @@ function Header() {
     <header className='bg-white'>
       {/* <TopStrip/> */}
       <Navigation/>
-
-    
     </header>
   )
 }

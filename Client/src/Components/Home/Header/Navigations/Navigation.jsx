@@ -161,6 +161,7 @@ const Navigation = () => {
             <MobileNavItem label="Collection" to="/collection" />
             <MobileNavItem label="Our Artisans" to="/artician" />
             <MobileNavItem label="Corporate Gifting" to="/bulk-quote" />
+             <MobileNavItem label="Contact Us" to="/contactus" />
           </div>
 
           <div className="mt-auto pt-6 border-t border-stone-100">

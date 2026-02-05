@@ -199,7 +199,7 @@ function StateCard({ state, isFeatured, onHover, isHovered, previewProducts }) {
         <span className="text-4xl mb-3">{icon}</span>
         <h3 className="text-white font-serif text-xl">{state.name}</h3>
         <p className="text-[11px] text-amber-300 uppercase tracking-widest mt-1">
-          Explore Crafts
+          Explore 
         </p>
       </div>
 

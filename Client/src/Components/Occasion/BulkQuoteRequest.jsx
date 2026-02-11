@@ -196,8 +196,8 @@ function BulkQuoteRequest() {
                     </nav>
 
                     <h1
-                        className="text-2xl md:text-3xl font-bold text-white"
-                        style={{ fontFamily: "'Playfair Display', serif" }}
+                        className="text-2xl md:text-3xl  text-white"
+                        style={{ fontFamily: "serif" }}
                     >
                         Request Bulk Quote
                     </h1>

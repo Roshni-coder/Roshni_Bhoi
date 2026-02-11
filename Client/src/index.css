@@ -11,7 +11,7 @@ body {
   max-width: 100%;
   background: #f9fafb;
   color: #666;
-  font-family: Roboto, Inter, Helvetica, Arial, sans-serif;
+  font-family: !important sans-serif;
 }
 
 p {

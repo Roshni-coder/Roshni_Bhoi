@@ -1,552 +1,530 @@
-/**
- * Gift Finder Quiz
- * Interactive 5-step quiz to recommend perfect gifts
- * Premium design with animations and progress tracking
- */
 import React, { useState } from "react";
 import { Link, useNavigate, useSearchParams } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
 import {
-    HiArrowRight, HiArrowLeft, HiRefresh, HiSparkles,
-    HiStar, HiShoppingCart, HiCheck, HiGift, HiLightningBolt
+    HiArrowRight, HiArrowLeft, HiRefresh, 
+    HiCheck, HiGift, HiArrowNarrowRight
 } from "react-icons/hi";
 import api from "../../utils/api";
 
-// Quiz Questions
 const questions = [
     {
         id: 'recipient',
         title: 'Who are you gifting to?',
-        subtitle: 'This helps us match the right price range and style',
+        subtitle: 'We will curate styles and price ranges that fit your relationship.',
         options: [
-            { id: 'high-value-clients', label: 'High-value Clients', desc: 'VIP treatment', icon: '👑', color: 'from-amber-500 to-orange-500' },
-            { id: 'regular-clients', label: 'Regular Clients', desc: 'Professional touch', icon: '🏢', color: 'from-blue-500 to-indigo-500' },
-            { id: 'employees', label: 'Employees', desc: 'Team appreciation', icon: '👔', color: 'from-green-500 to-emerald-500' },
-            { id: 'partners', label: 'Business Partners', desc: 'Mutual respect', icon: '🤝', color: 'from-purple-500 to-violet-500' },
-            { id: 'mixed', label: 'Mixed Group', desc: 'Various recipients', icon: '👥', color: 'from-slate-500 to-slate-600' }
+            { id: 'high-value-clients', label: 'High-value Clients', desc: 'VIP Treatment', icon: '👑', color: 'bg-orange-50' },
+            { id: 'regular-clients', label: 'Regular Clients', desc: 'Professional Touch', icon: '🏢', color: 'bg-emerald-50' },
+            { id: 'employees', label: 'Employees', desc: 'Team Appreciation', icon: '👔', color: 'bg-blue-50' },
+            { id: 'partners', label: 'Business Partners', desc: 'Mutual Respect', icon: '🤝', color: 'bg-purple-50' },
+            { id: 'mixed', label: 'Mixed Group', desc: 'Various Recipients', icon: '👥', color: 'bg-slate-50' }
         ]
     },
     {
         id: 'budget',
-        title: "What's your budget per gift?",
-        subtitle: 'We have options for every budget',
+        title: "Define your budget per gift",
+        subtitle: 'Handcrafted treasures for every price point.',
         options: [
-            { id: 'under-500', label: 'Under ₹500', desc: 'Budget-friendly', icon: '💰', color: 'from-green-500 to-emerald-500' },
-            { id: '500-1000', label: '₹500 - ₹1,000', desc: 'Great value', icon: '💵', color: 'from-teal-500 to-cyan-500' },
-            { id: '1000-2500', label: '₹1,000 - ₹2,500', desc: 'Mid-range', icon: '💎', color: 'from-blue-500 to-indigo-500' },
-            { id: '2500-5000', label: '₹2,500 - ₹5,000', desc: 'Premium', icon: '👑', color: 'from-amber-500 to-orange-500' },
-            { id: '5000-plus', label: '₹5,000+', desc: 'Luxury', icon: '✨', color: 'from-purple-500 to-pink-500' }
+            { id: 'under-500', label: 'Under ₹500', desc: 'Budget-friendly', icon: '💰', color: 'bg-emerald-50' },
+            { id: '500-1000', label: '₹500 - ₹1,000', desc: 'Great value', icon: '💵', color: 'bg-teal-50' },
+            { id: '1000-2500', label: '₹1,000 - ₹2,500', desc: 'Mid-range luxury', icon: '💎', color: 'bg-amber-50' },
+            { id: '2500-5000', label: '₹2,500 - ₹5,000', desc: 'Premium luxury', icon: '✨', color: 'bg-orange-50' },
+            { id: '5000-plus', label: '₹5,000+', desc: 'Exclusive heritage', icon: '🏺', color: 'bg-rose-50' }
         ]
     },
     {
         id: 'quantity',
-        title: 'How many gifts do you need?',
-        subtitle: 'Bulk orders get bigger discounts',
+        title: 'Total units required?',
+        subtitle: 'Bulk orders qualify for artisan-direct discounts.',
         options: [
-            { id: '1-25', label: '1-25 units', desc: 'Small batch', icon: '📦', color: 'from-slate-500 to-slate-600' },
-            { id: '25-50', label: '25-50 units', desc: '5% discount', icon: '📦', color: 'from-green-500 to-emerald-500' },
-            { id: '50-100', label: '50-100 units', desc: '10% discount', icon: '📦', color: 'from-blue-500 to-indigo-500' },
-            { id: '100-500', label: '100-500 units', desc: '15% discount', icon: '📦', color: 'from-amber-500 to-orange-500' },
-            { id: '500-plus', label: '500+ units', desc: '20% discount', icon: '📦', color: 'from-purple-500 to-pink-500' }
+            { id: '1-25', label: '1-25 units', desc: 'Boutique order', icon: '📦', color: 'bg-slate-50' },
+            { id: '25-50', label: '25-50 units', desc: '5% artisan discount', icon: '🎁', color: 'bg-green-50' },
+            { id: '50-100', label: '50-100 units', desc: '10% artisan discount', icon: '🏷️', color: 'bg-amber-50' },
+            { id: '100-plus', label: '100+ units', desc: 'Exclusive bulk rates', icon: '🚛', color: 'bg-emerald-50' }
         ]
     },
     {
-    id: 'collection',
-    title: 'Choose a collection',
-    subtitle: 'Handpicked artisan categories',
-    options: [
-        {
-            id: 'jewellery',
-            label: 'Jewellery',
-            desc: 'Handcrafted & traditional designs',
-            icon: '💍',
-            color: 'from-pink-500 to-rose-500'
-        },
-        {
-            id: 'teaware',
-            label: 'Teaware',
-            desc: 'Cups, kettles & tea accessories',
-            icon: '🍵',
-            color: 'from-amber-500 to-orange-500'
-        },
-        {
-            id: 'bamboo-cane',
-            label: 'Bamboo & Cane',
-            desc: 'Eco-friendly handmade products',
-            icon: '🎋',
-            color: 'from-green-600 to-lime-500'
-        },
-        {
-            id: 'handicrafts',
-            label: 'Handicrafts',
-            desc: 'Artisan-made decor & utilities',
-            icon: '🧺',
-            color: 'from-indigo-500 to-purple-500'
-        },
-        {
-            id: 'skip',
-            label: 'Skip',
-            desc: 'Show all collections',
-            icon: '⏭️',
-            color: 'from-slate-400 to-slate-500'
-        }
-    ]
-}
-,
-    {
-    id: 'preference',
-    title: 'What kind of gift feels right?',
-    subtitle: 'Choose the emotion you want to gift',
-    options: [
-        {
-            id: 'utility-craft',
-            label: 'Everyday Craft',
-            desc: 'Handmade items for daily use',
-            icon: '🧺',
-            color: 'from-blue-600 to-indigo-600'
-        },
-        {
-            id: 'heritage-decor',
-            label: 'Heritage Decor',
-            desc: 'Cultural & artistic pieces',
-            icon: '🏺',
-            color: 'from-amber-600 to-orange-600'
-        },
-        {
-            id: 'artisan-food',
-            label: 'Artisan Gourmet',
-            desc: 'Traditional food & beverages',
-            icon: '🍵',
-            color: 'from-rose-600 to-pink-600'
-        },
-        {
-            id: 'curated-hamper',
-            label: 'Curated Hampers',
-            desc: 'Thoughtfully mixed gift boxes',
-            icon: '🎁',
-            color: 'from-purple-600 to-violet-600'
-        }
-    ]
-}
-
+        id: 'collection',
+        title: 'Select a craft category',
+        subtitle: 'Handpicked artisan traditions from the North East.',
+        options: [
+            { id: 'jewellery', label: 'Jewellery', desc: 'Traditional & Modern', icon: '💍', color: 'bg-rose-50' },
+            { id: 'teaware', label: 'Teaware', desc: 'Organic & Ceramic', icon: '🍵', color: 'bg-orange-50' },
+            { id: 'bamboo-cane', label: 'Bamboo & Cane', desc: 'Eco-conscious decor', icon: '🎋', color: 'bg-green-50' },
+            { id: 'handicrafts', label: 'Handicrafts', desc: 'Heritage utilities', icon: '🧺', color: 'bg-amber-50' }
+        ]
+    }
 ];
 
 function GiftFinderQuiz() {
-    const [searchParams] = useSearchParams();
-    const navigate = useNavigate();
-
     const [currentStep, setCurrentStep] = useState(0);
     const [answers, setAnswers] = useState({});
     const [isLoading, setIsLoading] = useState(false);
     const [recommendations, setRecommendations] = useState(null);
 
-    const occasion = searchParams.get('occasion') || '';
     const progress = ((currentStep + 1) / questions.length) * 100;
     const currentQuestion = questions[currentStep];
-    const isLastStep = currentStep === questions.length - 1;
 
     const handleSelect = async (optionId) => {
         const newAnswers = { ...answers, [currentQuestion.id]: optionId };
         setAnswers(newAnswers);
-
-        if (isLastStep) {
-            // Submit quiz
+        if (currentStep === questions.length - 1) {
             await getRecommendations(newAnswers);
         } else {
-            // Next question with slight delay for animation
-            setTimeout(() => setCurrentStep(currentStep + 1), 200);
+            setTimeout(() => setCurrentStep(currentStep + 1), 400);
         }
     };
 
     const getRecommendations = async (quizAnswers) => {
         setIsLoading(true);
         try {
-            const res = await api.post('/api/gift-finder', {
-                ...quizAnswers,
-                occasion
-            });
-            if (res.data.success) {
-                setRecommendations(res.data.data);
-            }
+            const res = await api.post('/api/gift-finder', { ...quizAnswers });
+            if (res.data.success) setRecommendations(res.data.data);
+            else setRecommendations(getSampleRecommendations());
         } catch (error) {
-            console.error('Error getting recommendations:', error);
-            // Use sample recommendations for demo
             setRecommendations(getSampleRecommendations());
         } finally {
-            setIsLoading(false);
+            setTimeout(() => setIsLoading(false), 1500); // Smoother transition
         }
     };
 
-    const handleBack = () => {
-        if (currentStep > 0) {
-            setCurrentStep(currentStep - 1);
-        }
-    };
+   return (
+    <div className="min-h-screen bg-[#F9F7F2] font-serif text-[#2D4636] selection:bg-[#D4A373]/30">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-12 lg:py-16">
 
-    const handleRestart = () => {
-        setCurrentStep(0);
-        setAnswers({});
-        setRecommendations(null);
-    };
+            {/* Branding */}
+            <header className="text-center mb-6 sm:mb-8 lg:mb-10">
 
-    return (
-        <div className="min-h-screen bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900">
-            {/* Premium Fonts */}
-            <style>
-                {`
-          @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap');
-        `}
-            </style>
+                <motion.div
+                    initial={{ opacity: 0, y: -10 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    className="
+                        inline-flex items-center gap-2 sm:gap-3
+                        px-4 sm:px-6 py-2
+                        rounded-full
+                        border border-[#2D4636]/10
+                        bg-white/50
+                        backdrop-blur-sm
+                        shadow-sm
+                        mb-2 sm:mb-2
+                    "
+                >
+                    <HiGift className="text-[#D4A373] text-sm sm:text-base" />
 
-            {/* Decorative Background */}
-            <div className="absolute inset-0 overflow-hidden pointer-events-none">
-                <div className="absolute top-0 left-1/4 w-96 h-96 bg-amber-500/10 rounded-full blur-3xl" />
-                <div className="absolute bottom-0 right-1/4 w-96 h-96 bg-purple-500/10 rounded-full blur-3xl" />
-            </div>
+                    <span className="
+                        text-[9px]
+                        sm:text-[10px]
+                        uppercase
+                        tracking-[0.2em]
+                        font-bold
+                    ">
+                        The Heritage Concierge
+                    </span>
+                </motion.div>
 
-            <div className="relative max-w-3xl mx-auto px-4 py-12 md:py-20">
-                {/* Header */}
-                <div className="text-center mb-12">
-                    <motion.div
-                        initial={{ opacity: 0, y: 20 }}
-                        animate={{ opacity: 1, y: 0 }}
-                        className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-gradient-to-r from-amber-500/20 to-orange-500/20 border border-amber-500/30 mb-6"
-                    >
-                        <HiGift className="w-5 h-5 text-amber-400" />
-                        <span className="text-sm font-semibold text-amber-300 uppercase tracking-wider">
-                            Gift Finder Quiz
-                        </span>
-                    </motion.div>
 
-                    {!recommendations && (
-                        <>
-                            <motion.h1
-                                key={currentStep}
-                                initial={{ opacity: 0, y: 20 }}
-                                animate={{ opacity: 1, y: 0 }}
-                                className="text-3xl md:text-4xl font-bold text-white mb-4"
-                                style={{ fontFamily: "'Playfair Display', serif" }}
-                            >
-                                {currentQuestion?.title}
-                            </motion.h1>
-                            <motion.p
-                                key={`sub-${currentStep}`}
-                                initial={{ opacity: 0 }}
-                                animate={{ opacity: 1 }}
-                                className="text-slate-400"
-                            >
-                                {currentQuestion?.subtitle}
-                            </motion.p>
-                        </>
-                    )}
-                </div>
-
-                {/* Progress Bar */}
                 {!recommendations && (
-                    <div className="mb-10">
-                        <div className="flex items-center justify-between text-sm text-slate-400 mb-2">
-                            <span>Question {currentStep + 1} of {questions.length}</span>
-                            <span>{Math.round(progress)}% complete</span>
-                        </div>
-                        <div className="h-2 bg-slate-700 rounded-full overflow-hidden">
-                            <motion.div
-                                initial={{ width: 0 }}
-                                animate={{ width: `${progress}%` }}
-                                className="h-full bg-gradient-to-r from-amber-500 to-orange-500 rounded-full"
-                                transition={{ duration: 0.5 }}
-                            />
-                        </div>
-                    </div>
+
+                    <AnimatePresence mode="wait">
+
+                        <motion.div
+                            key={currentStep}
+                            initial={{ opacity: 0, y: 10 }}
+                            animate={{ opacity: 1, y: 0 }}
+                            exit={{ opacity: 0, y: -10 }}
+                            className="space-y-3 sm:space-y-4"
+                        >
+
+                            <h1 className="
+                                text-2xl
+                                sm:text-3xl
+                                md:text-4xl
+                                lg:text-5xl
+                                xl:text-6xl
+                                font-medium
+                                tracking-tight
+                                leading-tight
+                            ">
+                                {currentQuestion?.title}
+                            </h1>
+
+
+                            <p className="
+                                text-sm
+                                sm:text-base
+                                md:text-lg
+                                lg:text-xl
+                                italic
+                                max-w-2xl
+                                mx-auto
+                                text-slate-500
+                                px-2
+                            ">
+                                "{currentQuestion?.subtitle}"
+                            </p>
+
+                        </motion.div>
+
+                    </AnimatePresence>
+
                 )}
 
-                {/* Quiz Content */}
+            </header>
+
+
+            {/* Main Interaction Area */}
+            <div className="relative max-w-5xl mx-auto">
+
                 <AnimatePresence mode="wait">
+
                     {isLoading ? (
-                        <motion.div
-                            key="loading"
-                            initial={{ opacity: 0 }}
-                            animate={{ opacity: 1 }}
-                            exit={{ opacity: 0 }}
-                            className="text-center py-20"
-                        >
-                            <div className="w-16 h-16 mx-auto mb-6 rounded-full border-4 border-amber-500 border-t-transparent animate-spin" />
-                            <h3 className="text-xl font-semibold text-white mb-2">Finding your perfect gifts...</h3>
-                            <p className="text-slate-400">Analyzing your preferences</p>
-                        </motion.div>
+                        <LoadingState />
                     ) : recommendations ? (
                         <RecommendationsView
                             recommendations={recommendations}
-                            onRestart={handleRestart}
-                            occasion={occasion}
+                            onRestart={() => {
+                                setRecommendations(null);
+                                setCurrentStep(0);
+                                setAnswers({});
+                            }}
                         />
                     ) : (
-                        <motion.div
-                            key={currentStep}
-                            initial={{ opacity: 0, x: 20 }}
-                            animate={{ opacity: 1, x: 0 }}
-                            exit={{ opacity: 0, x: -20 }}
-                            transition={{ duration: 0.3 }}
-                        >
+
+                        <div className="space-y-8 sm:space-y-10 lg:space-y-12">
+
+
+                            {/* Progress Indicator */}
+                            <div className="flex items-center gap-3 sm:gap-4 max-w-xs mx-auto">
+
+                                <div className="flex-1 h-[2px] bg-[#2D4636]/10 overflow-hidden">
+
+                                    <motion.div
+                                        className="h-full bg-[#2D4636]"
+                                        initial={{ width: 0 }}
+                                        animate={{ width: `${progress}%` }}
+                                    />
+
+                                </div>
+
+
+                                <span className="
+                                    text-[9px]
+                                    sm:text-[10px]
+                                    font-bold
+                                    uppercase
+                                    tracking-widest
+                                    opacity-60
+                                ">
+                                    0{currentStep + 1} / 0{questions.length}
+                                </span>
+
+                            </div>
+
+
                             {/* Options Grid */}
-                            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                                {currentQuestion?.options.map((option, idx) => (
-                                    <motion.button
+                            <motion.div
+                                className="
+                                    grid
+                                    grid-cols-1
+                                    sm:grid-cols-2
+                                    gap-4
+                                    sm:gap-6
+                                "
+                                initial={{ opacity: 0 }}
+                                animate={{ opacity: 1 }}
+                            >
+
+                                {currentQuestion?.options.map((option) => (
+
+                                    <button
                                         key={option.id}
-                                        initial={{ opacity: 0, y: 20 }}
-                                        animate={{ opacity: 1, y: 0 }}
-                                        transition={{ delay: idx * 0.1 }}
                                         onClick={() => handleSelect(option.id)}
-                                        className={`group relative p-6 rounded-2xl text-left overflow-hidden transition-all hover:scale-[1.02] ${answers[currentQuestion.id] === option.id
-                                                ? 'ring-2 ring-amber-500'
-                                                : ''
-                                            }`}
+
+                                        className={`
+                                            group relative flex flex-col
+
+                                            p-5 sm:p-6 lg:p-8
+
+                                            text-left
+
+                                            transition-all duration-500
+
+                                            rounded-2xl sm:rounded-3xl
+
+                                            border
+
+                                            min-h-[140px]
+
+                                            ${answers[currentQuestion.id] === option.id
+                                                ? 'border-[#2D4636] bg-[#2D4636] text-white shadow-2xl'
+                                                : 'border-white bg-white/70 backdrop-blur-md hover:border-[#2D4636]/20 hover:shadow-xl'}
+                                        `}
                                     >
-                                        {/* Background Gradient */}
-                                        <div className={`absolute inset-0 bg-gradient-to-br ${option.color} opacity-10 group-hover:opacity-20 transition-opacity`} />
 
-                                        {/* Glass Effect */}
-                                        <div className="absolute inset-0 bg-white/5 backdrop-blur-sm border border-white/10 rounded-2xl" />
+                                        <div className={`
+                                            w-12 h-12 sm:w-14 sm:h-14
 
-                                        {/* Content */}
-                                        <div className="relative">
-                                            <div className="flex items-start justify-between mb-3">
-                                                <span className="text-4xl">{option.icon}</span>
-                                                {answers[currentQuestion.id] === option.id && (
-                                                    <div className="w-6 h-6 rounded-full bg-amber-500 flex items-center justify-center">
-                                                        <HiCheck className="w-4 h-4 text-white" />
-                                                    </div>
-                                                )}
-                                            </div>
-                                            <h3 className="text-lg font-bold text-white mb-1">{option.label}</h3>
-                                            <p className="text-sm text-slate-400">{option.desc}</p>
+                                            flex items-center justify-center
+
+                                            rounded-xl sm:rounded-2xl
+
+                                            text-xl sm:text-2xl
+
+                                            mb-4 sm:mb-6
+
+                                            transition-transform
+
+                                            group-hover:scale-110
+
+                                            shadow-inner
+
+                                            ${option.color}
+                                        `}>
+                                            {option.icon}
                                         </div>
-                                    </motion.button>
+
+
+                                        <div>
+
+                                            <h3 className="
+                                                text-base sm:text-lg lg:text-xl
+                                                font-medium
+                                                mb-1 sm:mb-2
+                                            ">
+                                                {option.label}
+                                            </h3>
+
+
+                                            <p className={`
+                                                text-xs sm:text-sm
+
+                                                ${answers[currentQuestion.id] === option.id
+                                                    ? 'text-white/70'
+                                                    : 'text-slate-400'}
+                                            `}>
+                                                {option.desc}
+                                            </p>
+
+                                        </div>
+
+
+                                        {answers[currentQuestion.id] === option.id && (
+                                            <motion.div
+                                                layoutId="check"
+                                                className="absolute top-4 sm:top-6 right-4 sm:right-6"
+                                            >
+                                                <HiCheck className="w-5 h-5 sm:w-6 sm:h-6 text-[#D4A373]" />
+                                            </motion.div>
+                                        )}
+
+                                    </button>
+
                                 ))}
-                            </div>
 
-                            {/* Navigation */}
-                            <div className="flex items-center justify-between mt-10">
-                                <button
-                                    onClick={handleBack}
-                                    disabled={currentStep === 0}
-                                    className={`flex items-center gap-2 px-5 py-2 rounded-xl text-slate-400 hover:text-white transition ${currentStep === 0 ? 'opacity-0 pointer-events-none' : ''
-                                        }`}
-                                >
-                                    <HiArrowLeft className="w-5 h-5" />
-                                    Back
-                                </button>
+                            </motion.div>
 
-                                <button
-                                    onClick={handleRestart}
-                                    className="flex items-center gap-2 px-5 py-2 rounded-xl text-slate-400 hover:text-white transition"
-                                >
-                                    <HiRefresh className="w-5 h-5" />
-                                    Start Over
-                                </button>
-                            </div>
-                        </motion.div>
-                    )}
-                </AnimatePresence>
-            </div>
-        </div>
-    );
-}
-
-// Recommendations View Component
-function RecommendationsView({ recommendations, onRestart, occasion }) {
-    const navigate = useNavigate();
-
-    return (
-        <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-        >
-            {/* Success Header */}
-            <div className="text-center mb-10">
-                <div className="w-20 h-20 mx-auto mb-6 rounded-full bg-gradient-to-br from-amber-500 to-orange-500 flex items-center justify-center">
-                    <HiSparkles className="w-10 h-10 text-white" />
-                </div>
-                <h2
-                    className="text-3xl font-bold text-white mb-3"
-                    style={{ fontFamily: "'Playfair Display', serif" }}
-                >
-                    Your Perfect Gift Matches
-                </h2>
-                <p className="text-slate-400">
-                    Based on your answers, here are our top recommendations
-                </p>
-            </div>
-
-            {/* Recommendations */}
-            <div className="space-y-6">
-                {recommendations.recommendations?.map((product, idx) => (
-                    <motion.div
-                        key={product._id || idx}
-                        initial={{ opacity: 0, y: 20 }}
-                        animate={{ opacity: 1, y: 0 }}
-                        transition={{ delay: idx * 0.15 }}
-                        className="relative overflow-hidden rounded-2xl bg-white/5 backdrop-blur-sm border border-white/10"
-                    >
-                        {/* Rank Badge */}
-                        <div className={`absolute top-4 left-4 z-10 px-3 py-1 rounded-full text-sm font-bold ${idx === 0
-                                ? 'bg-gradient-to-r from-amber-500 to-orange-500 text-white'
-                                : idx === 1
-                                    ? 'bg-slate-200 text-slate-700'
-                                    : 'bg-amber-100 text-amber-700'
-                            }`}>
-                            {product.label}
                         </div>
 
-                        <div className="flex flex-col md:flex-row">
-                            {/* Image */}
-                            <div className="md:w-48 aspect-square md:aspect-auto shrink-0">
-                                <img
-                                    src={product.images?.[0]?.url || 'https://via.placeholder.com/200'}
-                                    alt={product.title}
-                                    className="w-full h-full object-cover"
-                                />
-                            </div>
+                    )}
 
-                            {/* Content */}
-                            <div className="flex-1 p-6">
-                                <div className="flex items-start justify-between mb-3">
-                                    <div>
-                                        <h3 className="text-xl font-bold text-white mb-1">{product.title}</h3>
-                                        {product.state && (
-                                            <span className="text-sm text-teal-400">📍 {product.state}</span>
-                                        )}
+                </AnimatePresence>
+
+            </div>
+
+
+            {/* Footer */}
+            {!recommendations && !isLoading && (
+
+                <footer className="
+                    mt-12 sm:mt-16 lg:mt-20
+
+                    max-w-4xl mx-auto
+
+                    flex justify-between items-center
+
+                    border-t border-[#2D4636]/5
+
+                    pt-6 sm:pt-8 lg:pt-10
+                ">
+
+                    <button
+                        disabled={currentStep === 0}
+                        onClick={() => setCurrentStep(v => v - 1)}
+
+                        className={`
+                            flex items-center gap-2 sm:gap-3
+
+                            font-bold
+
+                            text-[10px] sm:text-xs
+
+                            uppercase tracking-[0.2em]
+
+                            transition-all
+
+                            ${currentStep === 0
+                                ? 'opacity-0'
+                                : 'hover:gap-5'}
+                        `}
+                    >
+                        <HiArrowLeft /> Previous
+                    </button>
+
+
+                    <button
+                        onClick={() => {
+                            setCurrentStep(0);
+                            setAnswers({});
+                        }}
+
+                        className="
+                            text-[10px]
+
+                            text-slate-400
+
+                            hover:text-red-400
+
+                            flex items-center gap-2
+
+                            uppercase tracking-[0.2em]
+
+                            font-bold
+
+                            transition-colors
+                        "
+                    >
+                        <HiRefresh /> Reset
+                    </button>
+
+                </footer>
+
+            )}
+
+        </div>
+    </div>
+);
+
+}
+
+const LoadingState = () => (
+    <motion.div 
+        initial={{ opacity: 0 }} 
+        animate={{ opacity: 1 }} 
+        className="text-center py-24"
+    >
+        <div className="relative w-32 h-32 mx-auto mb-10">
+            <div className="absolute inset-0 border-[1px] border-[#2D4636]/10 rounded-full" />
+            <motion.div 
+                animate={{ rotate: 360 }}
+                transition={{ duration: 4, repeat: Infinity, ease: "linear" }}
+                className="absolute inset-0 border-t-[1px] border-[#2D4636] rounded-full" 
+            />
+            <HiGift className="absolute inset-0 m-auto w-8 h-8 text-[#D4A373] animate-pulse" />
+        </div>
+        <h2 className="text-3xl font-medium mb-3">Curating the finest...</h2>
+        <p className="text-slate-400 italic">Finding pieces that tell a story</p>
+    </motion.div>
+);
+
+function RecommendationsView({ recommendations, onRestart }) {
+    return (
+        <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="space-y-12">
+            <div className="text-center">
+                <h2 className="text-4xl md:text-5xl font-medium mb-4">The Selection</h2>
+                <p className="text-slate-500 italic text-lg">Specially curated heritage pieces based on your profile.</p>
+            </div>
+
+            <div className="grid gap-10">
+                {recommendations.recommendations?.map((product, idx) => (
+                    <motion.div 
+                        initial={{ opacity: 0, x: -20 }}
+                        animate={{ opacity: 1, x: 0 }}
+                        transition={{ delay: idx * 0.2 }}
+                        key={idx} 
+                        className="bg-white rounded-[2.5rem] overflow-hidden shadow-2xl shadow-slate-200/50 flex flex-col md:flex-row group"
+                    >
+                        <div className="md:w-80 h-72 md:h-90 overflow-hidden relative">
+                            <img 
+                                src={product.images[0].url} 
+                                alt={product.title} 
+                                className="w-full h-full object-cover transition-transform duration-1000 group-hover:scale-110" 
+                            />
+                            <div className="absolute top-6 left-6 bg-white/90 backdrop-blur-md text-[#2D4636] text-[10px] font-bold px-4 py-2 rounded-full uppercase tracking-widest shadow-lg">
+                                {product.matchScore}% Match
+                            </div>
+                        </div>
+                        <div className="flex-1 p-10 flex flex-col justify-between">
+                            <div>
+                                <div className="flex justify-between flex-col items-start gap-2">
+                                    <div className="space-y-2">
+                                        {/* <span className="text-[#D4A373] text-[10px] font-bold uppercase tracking-[0.3em] block">Origin: {product.state}</span> */}
+                                        <h3 className="text-3xl font-medium leading-tight">{product.title}</h3>
                                     </div>
                                     <div className="text-right">
-                                        <div className="text-2xl font-bold text-white">₹{product.price?.toLocaleString()}</div>
-                                        {product.bulkPricing && (
-                                            <div className="text-sm text-amber-400">₹{product.bulkPricing.tier50} for 50+</div>
-                                        )}
+                                        <p className="!text-3xl py-2 font-bold text-[#2D4636]">₹{product.price.toLocaleString('en-IN')}</p>
+                                        {/* <p className="text-[9px] text-slate-400 uppercase font-bold tracking-widest">Incl. Artisan Tax</p> */}
                                     </div>
                                 </div>
-
-                                {/* Match Score */}
-                                <div className="flex items-center gap-3 mb-4">
-                                    <div className="flex-1 h-2 bg-slate-700 rounded-full overflow-hidden">
-                                        <div
-                                            className="h-full bg-gradient-to-r from-green-500 to-emerald-500 rounded-full"
-                                            style={{ width: `${product.matchScore}%` }}
-                                        />
-                                    </div>
-                                    <span className="text-sm font-semibold text-green-400">{product.matchScore}% match</span>
-                                </div>
-
-                                {/* Perfect For Tags */}
-                                {product.perfectFor && (
-                                    <div className="flex flex-wrap gap-2 mb-4">
-                                        {product.perfectFor.map((tag, i) => (
-                                            <span key={i} className="px-3 py-1 rounded-lg bg-white/10 text-white text-sm">
-                                                ✓ {tag}
-                                            </span>
-                                        ))}
-                                    </div>
-                                )}
-
-                                {/* Rating */}
-                                <div className="flex items-center gap-2 mb-4">
-                                    <div className="flex gap-0.5">
-                                        {[...Array(5)].map((_, i) => (
-                                            <HiStar
-                                                key={i}
-                                                className={`w-4 h-4 ${i < (product.rating || 4) ? 'text-amber-400' : 'text-slate-600'}`}
-                                            />
-                                        ))}
-                                    </div>
-                                    <span className="text-sm text-slate-400">({product.reviewCount || 0} reviews)</span>
-                                </div>
-
-                                {/* Actions */}
-                                <div className="flex gap-3">
-                                    <Link
-                                        to={`/products/${product._id}`}
-                                        className="flex items-center gap-2 px-5 py-2.5 rounded-xl bg-gradient-to-r from-amber-500 to-orange-500 text-white font-semibold hover:from-amber-600 hover:to-orange-600 transition"
-                                    >
-                                        <HiShoppingCart className="w-5 h-5" />
-                                        View Product
-                                    </Link>
-                                    <button className="px-5 py-2.5 rounded-xl border border-white/20 text-white hover:bg-white/10 transition">
-                                        Quick View
-                                    </button>
+                                <div className="flex flex-wrap gap-2 pt-4">
+                                    {product.perfectFor.map((tag, i) => (
+                                        <span key={i} className="bg-[#F9F7F2] text-[#2D4636] text-[9px] font-bold px-4 py-1.5 rounded-full border border-[#2D4636]/5 uppercase">
+                                            {tag}
+                                        </span>
+                                    ))}
                                 </div>
                             </div>
+                            <Link 
+                                to={`/products/${product._id}`} 
+                                className="w-full bg-[#2D4636] text-white text-center py-5 rounded-2xl font-bold text-xs uppercase tracking-[0.2em] hover:bg-[#1a2b21] transition-all flex items-center justify-center gap-3 group"
+                            >
+                                View Details <HiArrowNarrowRight className="text-xl transition-transform group-hover:translate-x-2" />
+                            </Link>
                         </div>
                     </motion.div>
                 ))}
             </div>
 
-            {/* Footer Actions */}
-            <div className="flex flex-col sm:flex-row items-center justify-center gap-4 mt-10">
-                <button
-                    onClick={onRestart}
-                    className="flex items-center gap-2 px-6 py-3 rounded-xl border border-white/20 text-white hover:bg-white/10 transition"
-                >
-                    <HiRefresh className="w-5 h-5" />
-                    Start Over
-                </button>
-                <Link
-                    to={occasion ? `/occasion/${occasion}` : "/shop-by-occasion"}
-                    className="flex items-center gap-2 px-6 py-3 rounded-xl bg-white text-slate-800 font-semibold hover:bg-slate-100 transition"
-                >
-                    Browse All Gifts
-                    <HiArrowRight className="w-5 h-5" />
-                </Link>
-            </div>
+            <div className="pt-16 text-center">
+    <button 
+        onClick={() => {
+            onRestart();
+            window.scrollTo({
+                top: 0,
+                behavior: "smooth"
+            });
+        }}
+        className="px-12 py-5 border border-[#2D4636]/10 rounded-2xl text-slate-400 font-bold uppercase tracking-[0.2em] text-[10px] hover:text-[#2D4636] hover:border-[#2D4636] transition-all"
+    >
+        Start New Discovery
+    </button>
+</div>
+
         </motion.div>
     );
 }
 
-// Sample recommendations for demo
 function getSampleRecommendations() {
     return {
         recommendations: [
             {
                 _id: '1',
-                title: 'Assam Tea Premium Gift Hamper',
-                price: 1299,
-                rating: 4.8,
-                reviewCount: 24,
-                matchScore: 95,
-                rank: 'top',
-                label: '🏆 TOP MATCH',
+                title: 'Heritage Muga Silk Hamper',
+                price: 4500,
+                matchScore: 98,
                 state: 'Assam',
-                images: [{ url: 'https://images.unsplash.com/photo-1564890369478-c89ca6d9cde9?w=400' }],
-                perfectFor: ['Clients', 'Senior Employees'],
-                bulkPricing: { tier50: 1169, tier100: 1104, tier500: 1039 }
+                images: [{ url: 'https://images.unsplash.com/photo-1564890369478-c89ca6d9cde9?w=800' }],
+                perfectFor: ['VIP Clients', 'Cultural Gifting']
             },
             {
                 _id: '2',
-                title: 'Muga Silk Designer Scarf',
-                price: 2499,
-                rating: 4.9,
-                reviewCount: 56,
-                matchScore: 88,
-                rank: 'alternative',
-                label: '🥈 GREAT ALTERNATIVE',
-                state: 'Assam',
-                images: [{ url: 'https://images.unsplash.com/photo-1601924994987-69e26d50dc26?w=400' }],
-                perfectFor: ['VIP Clients', 'Partners'],
-                bulkPricing: { tier50: 2249, tier100: 2124, tier500: 1999 }
-            },
-            {
-                _id: '3',
-                title: 'Northeast Gourmet Spices Box',
-                price: 899,
-                rating: 4.6,
-                reviewCount: 18,
+                title: 'Hand-woven Bamboo Desk Suite',
+                price: 1200,
                 matchScore: 85,
-                rank: 'budget',
-                label: '🥉 BUDGET-FRIENDLY',
-                state: 'Meghalaya',
-                images: [{ url: 'https://images.unsplash.com/photo-1596040033229-a9821ebd058d?w=400' }],
-                perfectFor: ['Employees', 'Large Teams'],
-                bulkPricing: { tier50: 809, tier100: 764, tier500: 719 }
+                state: 'Tripura',
+                images: [{ url: 'https://images.unsplash.com/photo-1596040033229-a9821ebd058d?w=800' }],
+                perfectFor: ['Employees', 'Eco-friendly']
             }
-        ],
-        totalMatches: 15
+        ]
     };
 }
 

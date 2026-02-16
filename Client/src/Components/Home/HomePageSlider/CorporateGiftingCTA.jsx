@@ -35,7 +35,7 @@ function CorporateGiftingCTA() {
 
           <h2 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold text-[#1a1a1a] mb-6 leading-tight">
             Authentic Heritage for <br className="hidden sm:block" />
-            <span className="text-[#3A5A40] italic">Modern Businesses</span>
+            <span className="text-[#3A5A40] ">Modern Businesses</span>
           </h2>
 
           <p className="text-[#555] text-lg sm:text-xl max-w-2xl mx-auto leading-relaxed opacity-90">
@@ -50,7 +50,7 @@ function CorporateGiftingCTA() {
             { value: "500+", label: "Trusted Partners" },
             { value: "10K+", label: "Gifts Delivered" },
             { value: "100+", label: "Master Artisans" },
-            { value: "GST", label: "Compliant Billing" },
+            { value: "4.5★", label: "Client Rating" },
           ].map((stat, idx) => (
             <div key={idx} className="bg-white/60 backdrop-blur-sm p-8 rounded-2xl shadow-sm border border-[#EBE9E0] text-center group hover:border-[#A6894A] transition-colors">
               <div className="text-3xl font-bold text-[#3A5A40] mb-2">{stat.value}</div>

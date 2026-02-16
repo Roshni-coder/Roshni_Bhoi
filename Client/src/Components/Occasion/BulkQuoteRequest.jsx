@@ -147,7 +147,7 @@ function BulkQuoteRequest() {
                         <span className="text-amber-600">Request Bulk Quote</span>
                     </nav>
                     <h1 className="text-4xl md:text-6xl font-serif text-slate-900 mb-6">
-                        Bulk <span className="italic text-amber-600">Inquiry</span>
+                        Bulk <span className=" text-amber-600">Inquiry</span>
                     </h1>
                     <div className="w-20 h-1 bg-amber-200 mx-auto rounded-full mb-6" />
                     <p className="text-slate-500 max-w-xl mx-auto text-lg font-sans font-light leading-relaxed">

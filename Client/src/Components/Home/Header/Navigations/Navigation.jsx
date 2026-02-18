@@ -123,6 +123,7 @@ const Navigation = () => {
                       <div className="p-2">
                         <DropdownItem icon={<FiUser />} label="My Profile" to="/myProfile" />
                         <DropdownItem icon={<FiPackage />} label="My Orders" to="/orders" />
+                          <DropdownItem icon={<FiPackage />} label="Bulk-cart" to="/bulk-cart" />
                         <div className="my-2 border-t border-stone-50" />
                         <button onClick={logout} className="group w-full flex items-center gap-3 px-4 py-3 text-[11px] font-black uppercase tracking-widest text-red-500 hover:bg-red-50 rounded-xl transition-all">
                           <FiLogOut className="text-lg group-hover:scale-110 transition-transform" /> Log Out

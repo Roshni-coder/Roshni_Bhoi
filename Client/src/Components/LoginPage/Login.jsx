@@ -11,6 +11,8 @@ const Login = () => {
 
   // 👇 SAME LOGIC - DO NOT REMOVE
   const pendingCart = location.state?.pendingCart;
+  const pendingBulkCart = location.state?.pendingBulkCart;
+
   const redirectTo = location.state?.redirectTo || "/";
   const { onLoginSuccess } = useContext(AppContext);
 
@@ -45,6 +47,25 @@ const Login = () => {
       } catch {
         toast.error("Failed to add product to cart");
       }
+    }
+    // BULK CART
+    if (pendingBulkCart) {
+
+        try {
+
+            await api.post("/api/bulk-cart", {
+
+                productId: pendingBulkCart.productId,
+                quantity: pendingBulkCart.quantity || 1,
+
+            });
+
+        } catch {
+
+            toast.error("Failed to add bulk cart");
+
+        }
+
     }
     navigate(redirectTo, { replace: true });
   };

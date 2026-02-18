@@ -49,6 +49,8 @@ import craftRoutes from "./routes/craftRoutes.js";
 import stateRoutes from "./routes/stateRoutes.js";
 import giftForRoutes from "./routes/giftForRoutes.js";
 import catalogRoutes from "./routes/catalogRoutes.js";
+import bulkQuoteRoutes from "./routes/bulkQuoteRoutes.js";
+import bulkCartRoutes from "./routes/bulkCartRoutes.js";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -81,6 +83,7 @@ app.use(
         // All inline scripts must be moved to external files or use nonces
         scriptSrc: [
           "'self'",
+
           "https://checkout.razorpay.com",
           "https://api.razorpay.com"
         ],
@@ -101,6 +104,9 @@ app.use(
         mediaSrc: ["'self'", "https://res.cloudinary.com"],
         connectSrc: [
           "'self'",
+            "http://localhost:7000",
+  "http://localhost:5173",
+  "http://localhost:5174",
           "https://api.giftsngifts.in",
           "https://api.razorpay.com",
           "https://lumberjack.razorpay.com",
@@ -156,7 +162,8 @@ const corsOptions = {
     "http://localhost:5176",
     "http://localhost:7000",
     "http://127.0.0.1:5173",
-    "http://127.0.0.1:5174"
+    "http://127.0.0.1:5174",
+      "http://localhost:7000"
     ];
 
     if (allowedOrigins.includes(origin)) {
@@ -397,6 +404,9 @@ app.use("/api", craftRoutes);
 app.use("/api", stateRoutes);
 app.use("/api", giftForRoutes);
 app.use("/api/admin/catalog", catalogRoutes);
+// app.use("/api/bulk-quotes", bulkQuoteRoutes);
+app.use("/api", bulkQuoteRoutes);
+app.use("/api", bulkCartRoutes);
 
 /* =========================
    HEALTH CHECK

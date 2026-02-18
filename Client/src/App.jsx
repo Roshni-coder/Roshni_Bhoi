@@ -94,6 +94,10 @@ import TrustBar from "./Components/Home/TrustBar/TrustBar.jsx";
 import ShopByStatePage from "./Components/Home/HomePageSlider/StateSliderPage.jsx";
 import CollectionDetailsPage from "./Components/Home/HomePageSlider/CollectionDetailsPage.jsx";
 import Contact from "./Components/contact/Contact.jsx";
+// import OccasionProductsPage from "./Components/Occasion/OccasionProductPage.jsx";
+import CorporateProductsPage from "./Components/Occasion/OccasionProductPage.jsx";
+import BulkCartPage from "./Components/Cart Page/BulkCartPage.jsx";
+import BulkSuccess from "./Components/Occasion/BulkSuccess.jsx";
 
 function App() {
   return (
@@ -125,7 +129,20 @@ function App() {
             <Route path="/shipping-info" element={<ShippingInfo />} />
             <Route path="/privacy-policy" element={<PrivacyPolicy />} />
             <Route path="/contactus" element={<Contact />} />
-            
+
+<Route
+path="/alloccasions"
+element={<CorporateProductsPage/>}
+/>
+<Route path="/bulk-cart" element={<BulkCartPage/>}/>
+
+{/* <Route path="/corporate/company-info" element={<CompanyInfoPage/>}/>
+
+<Route path="/corporate/delivery" element={<DeliveryPage/>}/> */}
+
+<Route path="/bulkrequestsuccess" element={<BulkSuccess/>}/>
+
+
             <Route path="/help-center" element={<HelpCenter />} />
             <Route path="/order-tracking" element={<OrderTracking />} />
             <Route path="/terms-of-use" element={<TermsOfUse />} />

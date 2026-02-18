@@ -639,5 +639,33 @@ function extractFeatures(product) {
 
     return features.slice(0, 5);
 }
+// GET ALL CORPORATE OCCASIONS ONLY
+
+router.get("/corporate-occasions", async (req, res) => {
+
+    try {
+
+        const corporateOccasions = await Occasion.find({
+            category: "corporate",
+            isActive: true
+        })
+        .sort({ displayOrder: 1 });
+
+        res.json({
+            success: true,
+            occasions: corporateOccasions
+        });
+
+    }
+    catch(error){
+
+        res.status(500).json({
+            success:false,
+            message:"Failed to fetch corporate occasions"
+        });
+
+    }
+
+});
 
 export default router;

@@ -8,8 +8,9 @@ const NavCategory = () => {
     { name: 'Shop by State', path: '/stop-by-state' },
     { name: 'Collections', path: '/collection' },
     { name: 'Artisans', path: '/artician' },
-    { name: 'Corporate Gifting', path: '/bulk-quote' },
+    { name: 'Corporate Gifting', path: '/alloccasions' },
     { name: 'Contact Us', path: '/contactus' },
+    // { name: 'occasion', path: '/' },
   ];
 
   return (

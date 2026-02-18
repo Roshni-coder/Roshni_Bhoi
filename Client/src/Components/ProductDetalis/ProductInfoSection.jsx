@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useContext } from 'react';
 import {
     HiStar,
     HiOutlineShieldCheck,
@@ -7,8 +7,12 @@ import {
     HiHeart,
     HiOutlineTruck,
     HiOutlineRefresh,
+    HiOutlineArrowRight,
 } from "react-icons/hi";
 import { BiMinus, BiPlus, BiLoaderAlt } from "react-icons/bi";
+import { AppContext } from '../context/Appcontext';
+import { useLocation, useNavigate } from 'react-router-dom';
+import { toast } from 'react-toastify';
 
 /**
  * SizeSelector - Updated with heritage border colors
@@ -84,6 +88,60 @@ const ProductInfoSection = ({
     onToggleWishlist,
 }) => {
     const savings = product.oldprice - product.price;
+const { addToBulkCart, isLoggedin } = useContext(AppContext);
+
+const navigate = useNavigate();
+
+const location = useLocation();
+
+
+const handleAddToBulkCart = async () => {
+
+    // 🔴 CASE 1: USER NOT LOGGED IN
+    if (!isLoggedin) {
+
+        toast.warning("Please login to request bulk quote");
+
+        navigate("/login", {
+
+            state: {
+
+                pendingBulkCart: {
+
+                    productId: product._id,
+                    quantity
+
+                },
+
+                redirectTo: "/bulk-cart"
+
+            }
+
+        });
+
+        return;
+
+    }
+
+
+    // 🟢 CASE 2: USER LOGGED IN
+    try {
+
+        await addToBulkCart(product, quantity);
+
+        toast.success("Added to Bulk Cart");
+
+        navigate("/bulk-cart");
+
+    }
+    catch (error) {
+
+        toast.error("Failed to add bulk cart");
+
+    }
+
+};
+
 
     return (
         <div className="p-4 sm:p-8 lg:p-10 flex flex-col max-w-2xl mx-auto lg:mx-0 bg-white">
@@ -132,48 +190,47 @@ const ProductInfoSection = ({
 
             {/* Ratings & Price Box */}
             <div className="mb-8 sm:mb-10 p-5 sm:p-8 bg-[#F9F6F0] rounded-2xl sm:rounded-3xl border border-[#EDE3D2] relative overflow-hidden">
-  {/* Rating Badge */}
-  <div className="flex flex-wrap items-center gap-2 mb-3 sm:mb-4">
-    <div className="flex items-center bg-white px-3 py-1 rounded-full shadow-sm border border-[#EDE3D2]">
-      {[1, 2, 3, 4, 5].map((star) => (
-        <HiStar
-          key={star}
-          className={`w-4 h-4 ${
-            star <= Math.round(reviewStats.avgRating)
-              ? "text-[#B58D2F]"
-              : "text-gray-200"
-          }`}
-        />
-      ))}
-      <span className="ml-2 text-xs font-bold text-[#322619]">
-        {reviewStats.avgRating}
-      </span>
-    </div>
+                {/* Rating Badge */}
+                <div className="flex flex-wrap items-center gap-2 mb-3 sm:mb-4">
+                    <div className="flex items-center bg-white px-3 py-1 rounded-full shadow-sm border border-[#EDE3D2]">
+                        {[1, 2, 3, 4, 5].map((star) => (
+                            <HiStar
+                                key={star}
+                                className={`w-4 h-4 ${star <= Math.round(reviewStats.avgRating)
+                                    ? "text-[#B58D2F]"
+                                    : "text-gray-200"
+                                    }`}
+                            />
+                        ))}
+                        <span className="ml-2 text-xs font-bold text-[#322619]">
+                            {reviewStats.avgRating}
+                        </span>
+                    </div>
 
-    <span className="text-xs font-medium text-[#544231] underline cursor-pointer">
-      {reviewStats.totalReviews} Reviews
-    </span>
-  </div>
+                    <span className="text-xs font-medium text-[#544231] underline cursor-pointer">
+                        {reviewStats.totalReviews} Reviews
+                    </span>
+                </div>
 
-  {/* Price */}
-  <div className="flex flex-wrap items-end gap-3 sm:gap-4">
-    <span className="text-xl sm:text-2xl font-serif font-black text-[#322619]">
-      ₹{product.price?.toLocaleString()}
-    </span>
+                {/* Price */}
+                <div className="flex flex-wrap items-end gap-3 sm:gap-4">
+                    <span className="text-xl sm:text-2xl font-serif font-black text-[#322619]">
+                        ₹{product.price?.toLocaleString()}
+                    </span>
 
-    {product.oldprice > product.price && (
-      <span className="text-sm sm:text-lg text-[#544231]/50 line-through decoration-[#B58D2F]/40">
-        ₹{product.oldprice?.toLocaleString()}
-      </span>
-    )}
-  </div>
+                    {product.oldprice > product.price && (
+                        <span className="text-sm sm:text-lg text-[#544231]/50 line-through decoration-[#B58D2F]/40">
+                            ₹{product.oldprice?.toLocaleString()}
+                        </span>
+                    )}
+                </div>
 
-  {/* Savings */}
-  <p className="mt-3 text-[10px] sm:text-[11px] text-[#544231] font-bold tracking-widest flex items-center gap-2">
-    <span className="w-1.5 h-1.5 bg-emerald-500 rounded-full animate-pulse"></span>
-    Save ₹{savings.toLocaleString()} on this handcrafted piece
-  </p>
-</div>
+                {/* Savings */}
+                <p className="mt-3 text-[10px] sm:text-[11px] text-[#544231] font-bold tracking-widest flex items-center gap-2">
+                    <span className="w-1.5 h-1.5 bg-emerald-500 rounded-full animate-pulse"></span>
+                    Save ₹{savings.toLocaleString()} on this handcrafted piece
+                </p>
+            </div>
 
 
             {/* Selectors */}
@@ -209,43 +266,51 @@ const ProductInfoSection = ({
                             {product.stock <= 0 ? "Out of Stock" : "Add to Cart"}
                         </>
                     )}
-                </button>
 
+                </button>
                 <button
                     onClick={onToggleWishlist}
                     className={`sm:col-span-1 flex items-center justify-center h-16 rounded-full transition-all border-2 active:scale-95 ${isWishlisted
-                            ? 'bg-[#322619] border-[#322619] text-white'
-                            : 'bg-white border-[#EDE3D2] text-[#322619] hover:border-[#B58D2F]'
+                        ? 'bg-[#322619] border-[#322619] text-white'
+                        : 'bg-white border-[#EDE3D2] text-[#322619] hover:border-[#B58D2F]'
                         }`}
                 >
                     {isWishlisted ? <HiHeart className="w-7 h-7" /> : <HiOutlineHeart className="w-7 h-7" />}
                 </button>
+                {/* Row 2: B2B/Corporate Action */}
+         <button
+    onClick={handleAddToBulkCart}
+    className="sm:col-span-5 flex items-center justify-center gap-3 bg-[#3A5A40] hover:bg-[#B89B5E] text-white h-16 rounded-full font-bold"
+>
+Request Bulk Quote
+</button>
+
             </div>
 
             {/* Heritage Trust Badges */}
-           {/* Heritage Trust Badges */}
-<div className="grid grid-cols-3 gap-3 sm:gap-4 py-6 sm:py-8 border-t-2 border-dashed border-[#EDE3D2]">
-  <div className="flex flex-col items-center text-center gap-1.5 sm:gap-2">
-    <HiOutlineTruck className="w-5 h-5 sm:w-6 sm:h-6 text-[#B58D2F]" />
-    <p className="text-[9px] sm:text-[10px] font-bold text-[#322619] ">
-      Pan India Delivery
-    </p>
-  </div>
+            {/* Heritage Trust Badges */}
+            <div className="grid grid-cols-3 gap-3 sm:gap-4 py-6 sm:py-8 border-t-2 border-dashed border-[#EDE3D2]">
+                <div className="flex flex-col items-center text-center gap-1.5 sm:gap-2">
+                    <HiOutlineTruck className="w-5 h-5 sm:w-6 sm:h-6 text-[#B58D2F]" />
+                    <p className="text-[9px] sm:text-[10px] font-bold text-[#322619] ">
+                        Pan India Delivery
+                    </p>
+                </div>
 
-  <div className="flex flex-col items-center text-center gap-1.5 sm:gap-2 border-x border-[#EDE3D2]">
-    <HiOutlineRefresh className="w-5 h-5 sm:w-6 sm:h-6 text-[#B58D2F]" />
-    <p className="text-[9px] sm:text-[10px] font-bold text-[#322619] ">
-      Artisan Support
-    </p>
-  </div>
+                <div className="flex flex-col items-center text-center gap-1.5 sm:gap-2 border-x border-[#EDE3D2]">
+                    <HiOutlineRefresh className="w-5 h-5 sm:w-6 sm:h-6 text-[#B58D2F]" />
+                    <p className="text-[9px] sm:text-[10px] font-bold text-[#322619] ">
+                        Artisan Support
+                    </p>
+                </div>
 
-  <div className="flex flex-col items-center text-center gap-1.5 sm:gap-2">
-    <HiOutlineShieldCheck className="w-5 h-5 sm:w-6 sm:h-6 text-[#B58D2F]" />
-    <p className="text-[9px] sm:text-[10px] font-bold text-[#322619] ">
-      Secure Payments
-    </p>
-  </div>
-</div>
+                <div className="flex flex-col items-center text-center gap-1.5 sm:gap-2">
+                    <HiOutlineShieldCheck className="w-5 h-5 sm:w-6 sm:h-6 text-[#B58D2F]" />
+                    <p className="text-[9px] sm:text-[10px] font-bold text-[#322619] ">
+                        Secure Payments
+                    </p>
+                </div>
+            </div>
 
         </div>
     );

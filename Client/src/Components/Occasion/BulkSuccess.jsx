@@ -42,7 +42,7 @@ export default function BulkSuccess() {
         {/* Actions */}
         <div className="space-y-4">
           <button 
-            onClick={() => navigate('/corporate-gifting')}
+            onClick={() => navigate('/alloccasions')}
             className="w-full bg-[#1A3C34] text-white py-4 rounded-full font-medium flex items-center justify-center gap-2 hover:bg-[#2a5248] transition-all"
           >
             <HiOutlineShoppingBag /> Continue Browsing

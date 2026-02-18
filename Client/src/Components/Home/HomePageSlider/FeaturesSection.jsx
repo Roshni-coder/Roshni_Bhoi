@@ -57,7 +57,7 @@ const FeaturesSection = () => {
             <span className="h-[1px] w-12 bg-[#C5A059]/40" />
           </div>
           
-          <h2 className="text-4xl md:text-5xl lg:text-6xl font-serif text-[#0F3D2E] leading-tight mb-6">
+          <h2 className="text-4xl md:text-5xl lg:text-6xl font-serif text-[#3A5A40] leading-tight mb-6">
             Why <span className="italic text-[#C5A059]">Gifts</span> from North East?
           </h2>
           
@@ -92,7 +92,7 @@ const FeaturesSection = () => {
 
                 {/* Subtitle Badge */}
                 <div className="absolute -bottom-2 left-1/2 -translate-x-1/2 z-20">
-                  <div className="bg-[#0F3D2E] text-white px-4 py-1.5 rounded-full shadow-lg border border-white/10 scale-90 md:scale-100">
+                  <div className="bg-[#3A5A40] text-white px-4 py-1.5 rounded-full shadow-lg border border-white/10 scale-90 md:scale-100">
                     <span className="text-[9px] font-bold uppercase tracking-widest block whitespace-nowrap">
                       {feature.subtitle}
                     </span>

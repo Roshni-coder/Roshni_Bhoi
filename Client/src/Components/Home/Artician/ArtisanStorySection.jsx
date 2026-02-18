@@ -60,15 +60,15 @@ const ArtisanStorySection = () => {
                   Our Human Connection
                 </p>
               </div>
-              <h2 className="text-4xl md:text-5xl lg:text-7xl font-serif text-[#0F3D2E] leading-[1.1] tracking-tight">
-                Meet the <span className="italic font-light text-[#C5A059]">Makers</span> behind the magic
+              <h2 className="text-4xl md:text-5xl lg:text-7xl font-serif text-[#3A5A40] leading-[1.1] tracking-tight">
+                Meet the <span className="font-light text-[#C5A059]">Makers</span> behind the magic
               </h2>
             </div>
 
             <div className="space-y-6 max-w-2xl text-[#6b5a4c] text-base md:text-lg leading-relaxed font-light">
-              <p className="first-letter:text-5xl first-letter:font-serif first-letter:text-[#0F3D2E] first-letter:mr-3 first-letter:float-left">
+              <p className="first-letter:text-5xl first-letter:font-serif first-letter:text-[#3A5A40] first-letter:mr-3 first-letter:float-left">
                 Every gift you choose supports a living culture and the families who sustain it.
-                In the quiet, mist-covered corners of <span className="text-[#0F3D2E] font-medium border-b border-[#C5A059]/30">North East India</span>, traditions are not just taught; they are lived through every rhythmic movement of the loom.
+                In the quiet, mist-covered corners of <span className="text-[#3A5A40] font-medium border-b border-[#C5A059]/30">North East India</span>, traditions are not just taught; they are lived through every rhythmic movement of the loom.
               </p>
 
               <p className="italic bg-stone-50 p-6 rounded-2xl border-l-4 border-[#C5A059]/40">
@@ -96,7 +96,7 @@ const ArtisanStorySection = () => {
             <div className=" flex flex-col sm:flex-row items-center gap-6">
               <Link
                 to="/artisans"
-                className="group relative inline-flex items-center justify-center px-10 py-5 overflow-hidden rounded-full bg-[#0F3D2E] text-white transition-all duration-500 hover:shadow-[0_15px_30px_rgba(15,61,46,0.3)] w-full sm:w-auto"
+                className="group relative inline-flex items-center justify-center px-10 py-5 overflow-hidden rounded-full bg-[#3A5A40] text-white transition-all duration-500 hover:shadow-[0_15px_30px_rgba(15,61,46,0.3)] w-full sm:w-auto"
               >
                 <span className="relative z-10 text-[11px] font-black uppercase tracking-[0.2em]">
                   Read Their Stories

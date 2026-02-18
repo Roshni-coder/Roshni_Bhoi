@@ -106,7 +106,7 @@ const Navigation = () => {
                   ) : (
                     <Button
                       onClick={() => navigate("/login")}
-                      className="!bg-[#0F3D2E] !text-white !rounded-full !px-6 !text-[11px] !font-black !tracking-widest hover:!bg-[#C5A059]"
+                      className="!bg-[#3A5A40] !text-white !rounded-full !px-6 !text-[11px] !font-black !tracking-widest hover:!bg-[#C5A059]"
                     >
                       SIGN IN
                     </Button>

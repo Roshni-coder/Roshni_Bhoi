@@ -140,7 +140,7 @@ const ProductSlider = () => {
 
                         {/* DISCOUNT TAG */}
                         {product.discount > 0 && (
-                          <div className="absolute top-0 left-0 bg-[#2d2a26] text-[#b39055] text-[9px] md:text-[10px] font-bold tracking-tighter px-2 md:px-3 py-1 uppercase rounded-br-lg">
+                          <div className="absolute top-0 left-0 bg-[#3A5A40] text-[#b39055] text-[9px] md:text-[10px] font-bold tracking-tighter px-2 md:px-3 py-1 uppercase rounded-br-lg">
                             {product.discount}% OFF
                           </div>
                         )}

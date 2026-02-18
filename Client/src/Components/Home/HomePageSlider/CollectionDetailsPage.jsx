@@ -147,7 +147,7 @@ function ProductCard({ product, index }) {
                     <div className="absolute inset-0 bg-gradient-to-t from-stone-900/40 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
                     
                     {product.discount > 0 && (
-                        <div className="absolute top-0 left-0 bg-[#3D2B1F] text-white text-[9px] font-black uppercase tracking-widest px-3 py-1.5 rounded-br-xl">
+                        <div className="absolute top-0 left-0 bg-[#3A5A40] text-white text-[9px] font-black uppercase tracking-widest px-3 py-1.5 rounded-br-xl">
                             {product.discount}% OFF
                         </div>
                     )}

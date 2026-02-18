@@ -67,7 +67,7 @@ function FeaturedCollections() {
                                         <span className="h-[1px] w-6 md:w-8 bg-[#C5A059]" />
                                         <span className="text-[#C5A059] text-[9px] md:text-[10px] font-black uppercase tracking-[0.3em]">Special Curation</span>
                                     </div>
-                                    <h2 className="text-3xl md:text-5xl font-serif text-[#0F3D2E] ">
+                                    <h2 className="text-3xl md:text-5xl font-serif text-[#3A5A40] ">
                                         {collection.title} <span className="text-xl md:text-2xl ">{collection.emoji}</span>
                                     </h2>
                                     <p className="text-stone-400 font-light italic text-sm md:text-lg">{collection.subtitle}</p>

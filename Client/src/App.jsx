@@ -130,17 +130,17 @@ function App() {
             <Route path="/privacy-policy" element={<PrivacyPolicy />} />
             <Route path="/contactus" element={<Contact />} />
 
-<Route
-path="/alloccasions"
-element={<CorporateProductsPage/>}
-/>
-<Route path="/bulk-cart" element={<BulkCartPage/>}/>
+            <Route
+              path="/alloccasions"
+              element={<CorporateProductsPage />}
+            />
+            <Route path="/bulk-cart" element={<BulkCartPage />} />
 
-{/* <Route path="/corporate/company-info" element={<CompanyInfoPage/>}/>
+            {/* <Route path="/corporate/company-info" element={<CompanyInfoPage/>}/>
 
 <Route path="/corporate/delivery" element={<DeliveryPage/>}/> */}
 
-<Route path="/bulkrequestsuccess" element={<BulkSuccess/>}/>
+            <Route path="/bulkrequestsuccess" element={<BulkSuccess />} />
 
 
             <Route path="/help-center" element={<HelpCenter />} />
@@ -154,7 +154,7 @@ element={<CorporateProductsPage/>}
             <Route path="/stop-by-state" element={<ShopByStatePage />} />
             <Route path="/collection" element={<CollectionPage />} />
             <Route path="/artician" element={<ArtisanStorySection />} />
-<Route path="/featured-collection/:type" element={<CollectionDetailsPage />} />
+            <Route path="/featured-collection/:type" element={<CollectionDetailsPage />} />
             {/* Shop by Occasion Routes */}
             <Route path="/shop-by-occasion" element={<ShopByOccasionPage />} />
             <Route path="/occasion/:slug" element={<OccasionLandingPage />} />
@@ -228,19 +228,19 @@ element={<CorporateProductsPage/>}
       <TrustBar />
 
       <Footer />
-    
-    <WhatsAppButton />
 
-{/* Chatbot above WhatsApp */}
-<Suspense fallback={null}>
-  <div className="fixed bottom-20 right-4 z-[9999]">
-    <ChatWidget />
-  </div>
-</Suspense>
+      <WhatsAppButton />
+
+      {/* Chatbot above WhatsApp */}
+      <Suspense fallback={null}>
+        <div className="fixed bottom-20 right-4 z-[9999]">
+          <ChatWidget />
+        </div>
+      </Suspense>
 
 
       {/* WhatsApp Support Button */}
-      
+
     </ErrorBoundary>
   );
 }

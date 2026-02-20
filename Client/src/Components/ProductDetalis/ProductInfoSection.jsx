@@ -8,6 +8,9 @@ import {
     HiOutlineTruck,
     HiOutlineRefresh,
     HiOutlineArrowRight,
+    HiOutlineMail,
+    HiOutlineUser,
+    HiOutlinePencilAlt,
 } from "react-icons/hi";
 import { BiMinus, BiPlus, BiLoaderAlt } from "react-icons/bi";
 import { AppContext } from '../context/Appcontext';
@@ -86,9 +89,16 @@ const ProductInfoSection = ({
     isAddingToCart,
     onAddToCart,
     onToggleWishlist,
+    giftMessage,
+    setGiftMessage,
+    senderName,
+    setSenderName,
+    receiverName,
+    setReceiverName
 }) => {
     const savings = product.oldprice - product.price;
 const { addToBulkCart, isLoggedin } = useContext(AppContext);
+
 
 const navigate = useNavigate();
 
@@ -286,6 +296,71 @@ Request Bulk Quote
 </button>
 
             </div>
+            {/* Gift Message Section */}
+{product.customizationAvailable?.message && (
+  <div className="mb-8 overflow-hidden rounded-2xl border border-[#EDE3D2] bg-white shadow-sm transition-all hover:shadow-md">
+  {/* Header with Icon */}
+  <div className="flex items-center gap-2 border-b border-[#EDE3D2] bg-[#F9F6F0] px-5 py-3">
+    <HiOutlinePencilAlt className="text-[#B58D2F]" />
+    <h3 className="font-serif text-sm font-bold text-[#322619]">
+      Personalize Your Gift <span className="text-[10px] font-normal uppercase tracking-widest text-[#544231]/50 ml-1">(Optional)</span>
+    </h3>
+  </div>
+
+  <div className="p-5 space-y-5">
+    {/* Message Area */}
+    <div className="space-y-2">
+      <label className="text-[10px] font-black uppercase tracking-[0.15em] text-[#544231]/60">
+        Your Message
+      </label>
+      <textarea
+        value={giftMessage}
+        onChange={(e) => setGiftMessage(e.target.value)}
+        placeholder="Write a heartfelt note to your loved one..."
+        rows="3"
+        className="w-full rounded-xl border border-[#EDE3D2] bg-[#FDFBF7] p-4 text-sm text-[#322619] placeholder:text-[#544231]/30 focus:border-[#B58D2F] focus:outline-none focus:ring-1 focus:ring-[#B58D2F] transition-all resize-none"
+      />
+    </div>
+
+    {/* Sender and Receiver Grid */}
+    <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+      {/* From Field */}
+      <div className="space-y-2">
+        <label className="flex items-center gap-1.5 text-[10px] font-black uppercase tracking-[0.15em] text-[#544231]/60">
+          <HiOutlineUser size={12} className="text-[#B58D2F]" /> From
+        </label>
+        <input
+          type="text"
+          value={senderName}
+          onChange={(e) => setSenderName(e.target.value)}
+          placeholder="Your name"
+          className="w-full rounded-full border border-[#EDE3D2] bg-[#FDFBF7] px-4 py-2.5 text-sm text-[#322619] placeholder:text-[#544231]/30 focus:border-[#B58D2F] focus:outline-none focus:ring-1 focus:ring-[#B58D2F] transition-all"
+        />
+      </div>
+
+      {/* To Field */}
+      <div className="space-y-2">
+        <label className="flex items-center gap-1.5 text-[10px] font-black uppercase tracking-[0.15em] text-[#544231]/60">
+          <HiOutlineMail size={12} className="text-[#B58D2F]" /> To
+        </label>
+        <input
+          type="text"
+          value={receiverName}
+          onChange={(e) => setReceiverName(e.target.value)}
+          placeholder="Recipient's name"
+          className="w-full rounded-full border border-[#EDE3D2] bg-[#FDFBF7] px-4 py-2.5 text-sm text-[#322619] placeholder:text-[#544231]/30 focus:border-[#B58D2F] focus:outline-none focus:ring-1 focus:ring-[#B58D2F] transition-all"
+        />
+      </div>
+    </div>
+
+    {/* Small Note */}
+    <p className="text-[10px] italic text-[#544231]/40 text-center">
+      Note: This message will be printed on a physical card and tucked into the package.
+    </p>
+  </div>
+</div>
+)}
+
 
             {/* Heritage Trust Badges */}
             {/* Heritage Trust Badges */}

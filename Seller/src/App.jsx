@@ -88,6 +88,8 @@ import OnboardingWizard from './Pages/Onboarding/OnboardingWizard.jsx';
 import BasicInfoStep from './Pages/Seller Profile/BasicInfoStep.jsx';
 import BusinessInfoStep from './Pages/Seller Profile/BusinessInfoStep.jsx';
 import BankDetailsStep from './Pages/Seller Profile/BankDetailsStep.jsx';
+// import MyBulkQuotes from './Pages/Orders Pages/MyBulkQuotes.jsx';
+import SellerBulkQuotes from './Pages/Orders Pages/MyBulkQuotes.jsx';
 
 export const MyContext = createContext();
 const Transition = React.forwardRef(function Transition(props, ref) {
@@ -130,6 +132,7 @@ function App() {
     { path: '/products/inventory', element: <ProtectedRoute><Layout><InventoryReports /></Layout></ProtectedRoute> },
     { path: '/products/add', element: <ProtectedRoute><Layout><AddProductWizard /></Layout></ProtectedRoute> },
     { path: '/orders', element: <ProtectedRoute><Layout><OrdersList /></Layout></ProtectedRoute> },
+     { path: '/bulkrequest', element: <ProtectedRoute><Layout><SellerBulkQuotes /></Layout></ProtectedRoute> },
     { path: '/orders/pending', element: <ProtectedRoute><Layout><OrdersList statusKey="pending" /></Layout></ProtectedRoute> },
     { path: '/orders/processing', element: <ProtectedRoute><Layout><OrdersList statusKey="processing" /></Layout></ProtectedRoute> },
     { path: '/orders/shipped', element: <ProtectedRoute><Layout><OrdersList statusKey="shipped" /></Layout></ProtectedRoute> },

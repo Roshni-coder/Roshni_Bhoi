@@ -2,12 +2,18 @@ import mongoose from "mongoose";
 
 const bulkQuoteSchema = new mongoose.Schema({
     quoteId: {
-  type: String,
-  unique: true
-},
+        type: String,
+        unique: true
+    },
+
+    sellerId: {                          // ✅ ADD THIS
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "Seller",
+        required: true
+    },
     userId: {
         type: mongoose.Schema.Types.ObjectId,
-        ref: "User",
+        ref: "user",
         required: true
     },
     companyName: { type: String, required: true },
@@ -26,7 +32,7 @@ const bulkQuoteSchema = new mongoose.Schema({
 
     deliveryDate: { type: Date, required: true },
     additionalNotes: { type: String },
-
+    
     // Capture items from the cart at the moment of request
     items: [{
         productId: { type: mongoose.Schema.Types.ObjectId, ref: "Product" },
@@ -38,11 +44,12 @@ const bulkQuoteSchema = new mongoose.Schema({
     }],
 
     totalAmount: { type: Number, required: true },
-    status: { 
-        type: String, 
-        enum: ["Pending", "Reviewed", "Contacted", "Completed"], 
-        default: "Pending" 
-    }
+    status: {
+  type: String,
+  enum: ["Pending", "Approved", "Rejected", "Completed"],
+  default: "Pending"
+}
+
 }, { timestamps: true });
 
 const BulkQuote = mongoose.models.BulkQuote || mongoose.model("BulkQuote", bulkQuoteSchema);

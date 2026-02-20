@@ -50,6 +50,7 @@ const menuSections = [
       { label: "Shipped", path: "/orders/shipped" },
       { label: "Delivered", path: "/orders/delivered" },
       { label: "Cancelled", path: "/orders/cancelled" },
+        { label: "Bulk Request", path: "/bulkrequest" },
     ],
   },
   // Communication section

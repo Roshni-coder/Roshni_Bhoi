@@ -11,6 +11,20 @@ const cartItemSchema = new mongoose.Schema({
     quantity: {
         type: Number,
         default: 1
+    },
+    giftMessage: {
+        type: String,
+        default: ""
+    },
+
+    senderName: {
+        type: String,
+        default: ""
+    },
+
+    receiverName: {
+        type: String,
+        default: ""
     }
 });
 

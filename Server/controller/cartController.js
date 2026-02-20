@@ -58,6 +58,9 @@ const formatCartItem = (item) => {
             ...stockInfo
         },
         quantity: item.quantity,
+        giftMessage: item.giftMessage,
+        senderName: item.senderName,
+        receiverName: item.receiverName
     };
 };
 
@@ -71,7 +74,7 @@ const formatCartItem = (item) => {
  */
 export const Addtocart = async (req, res) => {
     try {
-        const { productId, quantity } = req.body;
+        const { productId, quantity, giftMessage, senderName, receiverName } = req.body;
         const userId = req.user?.id || req.userId;
 
         if (!userId) {
@@ -146,11 +149,27 @@ export const Addtocart = async (req, res) => {
 
         if (existingItem) {
             existingItem.quantity = newQuantity;
+
+            // Only update if value is provided, otherwise keep existing
+            if (giftMessage !== undefined) {
+                existingItem.giftMessage = giftMessage;
+            }
+
+            if (senderName !== undefined) {
+                existingItem.senderName = senderName;
+            }
+
+            if (receiverName !== undefined) {
+                existingItem.receiverName = receiverName;
+            }
         } else {
             cart.items.push({
                 productId: product._id,
                 sellerId: product.sellerId,
                 quantity: qty,
+                giftMessage: giftMessage || "",
+                senderName: senderName || "",
+                receiverName: receiverName || ""
             });
         }
 

@@ -617,51 +617,123 @@ export const updateSellerProfile = async (req, res) => {
 };
 
 export const getSellerOrders = async (req, res) => {
-  // const { sellerId } = req.body;
+
   const sellerId = req.sellerId;
+
   try {
+
     const orders = await orderModel.find({
-      items: {
-        $elemMatch: { sellerId }
-      }
+      items: { $elemMatch: { sellerId } }
     })
-      .populate("user", "name email")
-      .populate("items.productId", "title price brand images")
-      .sort({ placedAt: -1 });
+    .populate("user", "name email")
+    .populate("items.productId", "title price brand images")
+    .sort({ placedAt: -1 });
+
 
     if (!orders.length) {
-      return res.status(200).json({ success: true, filteredOrders: [] });
+      return res.status(200).json({
+        success: true,
+        filteredOrders: []
+      });
     }
 
-    // Optional: filter out only relevant items for that seller
-    const filteredOrders = orders.map(order => {
-      const sellerItems = order.items.filter(item => item.sellerId.toString() === sellerId);
 
-      // Determine status for this seller's portion of the order
-      // If items have individual status, use that. Otherwise fallback to global order status.
-      // We'll take the status of the first item as the representative status for the seller's bundle
-      const sellerStatus = sellerItems.length > 0 && sellerItems[0].status
-        ? sellerItems[0].status
-        : order.status;
+    const filteredOrders = orders.map(order => {
+
+      const sellerItems = order.items.filter(
+        item => item.sellerId.toString() === sellerId.toString()
+      );
+
+
+      const sellerStatus =
+        sellerItems.length > 0
+          ? sellerItems[0].status || order.status
+          : order.status;
+
 
       return {
+
         _id: order._id,
+
         user: order.user,
-        items: sellerItems,
-        totalAmount: sellerItems.reduce((acc, item) => acc + item.price * item.quantity, 0),
-        shippingAddress: order.shippingAddress,
+
+        items: sellerItems.map(item => ({
+
+          _id: item._id,
+
+          productId: item.productId,
+
+          name: item.name,
+
+          quantity: item.quantity,
+
+          price: item.price,
+
+          status: item.status,
+
+          // ✅ Gift Details
+          giftMessage: item.giftMessage || "",
+
+          senderName: item.senderName || "",
+
+          receiverName: item.receiverName || ""
+
+        })),
+
+        totalAmount: sellerItems.reduce(
+          (acc, item) => acc + item.price * item.quantity,
+          0
+        ),
+
+        // ✅ FULL SHIPPING DETAILS
+        shippingAddress: {
+
+          name: order.shippingAddress?.name || "",
+
+          address: order.shippingAddress?.address || "",
+
+          city: order.shippingAddress?.city || "",
+
+          state: order.shippingAddress?.state || "",
+
+          pin: order.shippingAddress?.pin || "",
+
+          phone: order.shippingAddress?.phone || "",
+
+          alternatephone: order.shippingAddress?.alternatephone || ""
+
+        },
+
         placedAt: order.placedAt,
+
         status: sellerStatus,
-        image: order.image,
-        paymentId: order.paymentId
+
+        paymentId: order.paymentId,
+
+        image: order.image
+
       };
+
     });
 
-    res.status(200).json({ success: true, filteredOrders });
+
+    res.status(200).json({
+      success: true,
+      filteredOrders
+    });
+
+
   } catch (error) {
+
     console.error("Error fetching seller orders:", error);
-    res.status(500).json({ message: "Server error", error: error.message });
+
+    res.status(500).json({
+      success: false,
+      message: "Server error"
+    });
+
   }
+
 };
 export const getSeller = async (req, res) => {
   const sellerId = req.sellerId;

@@ -168,7 +168,7 @@ function OrdersList() {
                   return (
                     <React.Fragment key={order._id}>
                       <tr className={`hover:bg-slate-50/80 transition-colors ${isSelected ? 'bg-blue-50/40' : ''}`}>
-                        
+
                         <td className="px-4 py-4 text-center">
                           <button onClick={() => toggleOrderDetails(index)} className={`w-8 h-8 flex items-center justify-center rounded-lg transition-all ${isExpanded ? 'bg-slate-800 text-white shadow-md' : 'text-slate-400 hover:bg-slate-100'}`}>
                             {isExpanded ? <FaAngleUp size={12} /> : <FaAngleDown size={12} />}
@@ -211,49 +211,170 @@ function OrdersList() {
                                   </div>
                                   <div className="space-y-4 max-h-[400px] overflow-y-auto pr-2 custom-scrollbar">
                                     {order.items?.map((item) => (
-                                      <div key={item._id} className="flex items-center justify-between p-3 bg-slate-50/50 rounded-2xl border border-transparent hover:border-slate-200 transition-all">
-                                        <div className="flex items-center gap-4 min-w-0">
-                                          <img src={item.image || order.image || "/placeholder.png"} className="w-12 h-12 rounded-xl object-cover shadow-sm border border-slate-100" />
-                                          <div className="min-w-0">
-                                            <p className="text-sm font-black text-slate-800 truncate max-w-[200px]">{item.productId?.title || "Removed Item"}</p>
-                                            <p className="text-[10px] font-bold text-slate-400 uppercase mt-1">₹{item.price} × {item.quantity}</p>
+
+                                      <div key={item._id}
+                                        className="p-4 bg-white rounded-2xl border border-slate-200 space-y-3">
+
+                                        <div className="flex items-center justify-between">
+
+                                          <div className="flex items-center gap-4">
+
+                                            <img
+                                              src={item.productId?.images?.[0]?.url || "/placeholder.png"}
+                                              className="w-14 h-14 rounded-xl"
+                                            />
+
+                                            <div>
+
+                                              <p className="font-bold">
+                                                {item.productId?.title}
+                                              </p>
+
+                                              <p className="text-sm text-gray-500">
+                                                ₹{item.price} × {item.quantity}
+                                              </p>
+
+                                            </div>
+
                                           </div>
+
+                                          <p className="font-bold text-indigo-600">
+                                            ₹{item.price * item.quantity}
+                                          </p>
+
                                         </div>
-                                        <p className="text-sm font-black text-indigo-600 ml-4">₹{(item.price * item.quantity).toFixed(2)}</p>
+
+
+                                        {/* 🎁 Gift Details */}
+                                        {(item.giftMessage || item.senderName || item.receiverName) && (
+
+                                          <div className="bg-pink-50 border border-pink-200 rounded-xl p-3">
+
+                                            <p className="text-xs font-bold text-pink-600 mb-1">
+                                              🎁 Gift Details
+                                            </p>
+
+                                            {item.receiverName && (
+                                              <p className="text-sm">
+                                                <b>To:</b> {item.receiverName}
+                                              </p>
+                                            )}
+
+                                            {item.senderName && (
+                                              <p className="text-sm">
+                                                <b>From:</b> {item.senderName}
+                                              </p>
+                                            )}
+
+                                            {item.giftMessage && (
+                                              <p className="text-sm italic text-gray-600">
+                                                "{item.giftMessage}"
+                                              </p>
+                                            )}
+
+                                          </div>
+
+                                        )}
+
                                       </div>
+
                                     ))}
                                   </div>
                                 </div>
 
-                                <div className="w-full lg:w-[380px] bg-slate-50/50 p-6 sm:p-8 space-y-8">
-                                  <div className="space-y-4">
-                                    <h4 className="text-xs font-black text-slate-400 uppercase tracking-[0.2em] flex items-center gap-2"><FaMapMarkerAlt className="text-indigo-500" /> Destination</h4>
-                                    <div className="bg-white p-5 rounded-3xl border border-slate-100 shadow-sm relative overflow-hidden group">
-                                      <div className="absolute top-0 right-0 p-3 opacity-5 group-hover:scale-125 transition-transform"><FaMapMarkerAlt size={40}/></div>
-                                      <p className="font-black text-sm text-slate-800 mb-1">{order.shippingAddress?.name}</p>
-                                      <p className="text-xs text-slate-500 font-medium leading-relaxed mb-3">
-                                        {order.shippingAddress?.address}, {order.shippingAddress?.city}, {order.shippingAddress?.state}
-                                      </p>
-                                      <span className="inline-block px-3 py-1 bg-indigo-600 text-white rounded-lg text-[11px] font-black shadow-lg shadow-indigo-100">PIN: {order.shippingAddress?.pincode || order.shippingAddress?.zipCode || "N/A"}</span>
-                                    </div>
-                                  </div>
+                              <div className="w-full lg:w-[400px] bg-slate-50/50 p-6 sm:p-8 space-y-6 border-l border-slate-100">
+  
+  {/* --- SHIPPING LOGISTICS --- */}
+  <div className="space-y-4">
+    <div className="flex items-center justify-between">
+      <h4 className="text-[10px] font-black text-slate-400 uppercase tracking-[0.2em] flex items-center gap-2">
+        <FaMapMarkerAlt className="text-indigo-500" /> Shipping Logistics
+      </h4>
+    </div>
 
-                                  <div className="space-y-4">
-                                    <h4 className="text-xs font-black text-slate-400 uppercase tracking-[0.2em] flex items-center gap-2"><FaUser className="text-indigo-500" /> Contact Detail</h4>
-                                    <div className="grid grid-cols-1 gap-2">
-                                      <div className="flex items-center gap-3 p-3 bg-white rounded-2xl border border-slate-100 shadow-sm">
-                                        <div className="w-8 h-8 rounded-xl bg-blue-50 text-blue-600 flex items-center justify-center"><FaPhoneAlt size={12}/></div>
-                                        <span className="text-xs font-bold text-slate-600">{order.shippingAddress?.phone}</span>
-                                      </div>
-                                      {order.shippingAddress?.email && (
-                                        <div className="flex items-center gap-3 p-3 bg-white rounded-2xl border border-slate-100 shadow-sm overflow-hidden">
-                                          <div className="w-8 h-8 rounded-xl bg-emerald-50 text-emerald-600 flex items-center justify-center shrink-0"><HiOutlineMail size={16}/></div>
-                                          <span className="text-xs font-bold text-slate-600 truncate">{order.shippingAddress.email}</span>
-                                        </div>
-                                      )}
-                                    </div>
-                                  </div>
-                                </div>
+    <div className="bg-white p-6 rounded-[2rem] border border-slate-200/60 shadow-sm relative overflow-hidden group hover:shadow-md transition-shadow">
+      {/* Subtle background decoration */}
+      <div className="absolute -top-2 -right-2 opacity-[0.03] group-hover:scale-110 transition-transform">
+        <FaMapMarkerAlt size={80} />
+      </div>
+
+      <div className="relative z-10 space-y-3">
+        <div>
+          <p className="text-[10px] font-bold text-indigo-500 uppercase tracking-tight mb-1">Recipient</p>
+          <p className="text-base font-black text-slate-900 leading-none">
+            {order.shippingAddress?.name}
+          </p>
+        </div>
+
+        <div>
+          <p className="text-[10px] font-bold text-slate-400 uppercase tracking-tight mb-1">Destination</p>
+          <p className="text-sm font-medium text-slate-600 leading-relaxed">
+            {order.shippingAddress?.address},<br />
+            {order.shippingAddress?.city}, {order.shippingAddress?.state}
+          </p>
+        </div>
+
+        <div className="pt-2">
+          <span className="inline-flex items-center px-3 py-1 bg-slate-900 text-white text-[11px] font-black rounded-lg tracking-widest shadow-sm">
+            PIN: {order.shippingAddress?.pin || "N/A"}
+          </span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  {/* --- CONTACT LIAISON --- */}
+  <div className="space-y-4">
+    <h4 className="text-[10px] font-black text-slate-400 uppercase tracking-[0.2em] flex items-center gap-2">
+      <FaUser className="text-indigo-500" /> Contact Liaison
+    </h4>
+
+    <div className="grid grid-cols-1 gap-3">
+      {/* Primary Phone */}
+      <div className="flex items-center gap-4 p-4 bg-white rounded-2xl border border-slate-200/60 shadow-sm group hover:border-indigo-200 transition-colors">
+        <div className="w-10 h-10 rounded-xl bg-indigo-50 text-indigo-600 flex items-center justify-center shrink-0 group-hover:bg-indigo-600 group-hover:text-white transition-all">
+          <FaPhoneAlt size={14} />
+        </div>
+        <div className="flex flex-col min-w-0">
+          <span className="text-[9px] font-black text-slate-400 uppercase tracking-tighter">Mobile Line</span>
+          <span className="text-sm font-black text-slate-900 tracking-wider truncate">
+            {order.shippingAddress?.phone}
+          </span>
+        </div>
+      </div>
+
+      {/* Alternate Phone (Conditional) */}
+      {order.shippingAddress?.alternatephone && (
+        <div className="flex items-center gap-4 p-4 bg-white rounded-2xl border border-slate-200/60 shadow-sm group">
+          <div className="w-10 h-10 rounded-xl bg-slate-50 text-slate-400 flex items-center justify-center shrink-0">
+            <FaPhoneAlt size={14} />
+          </div>
+          <div className="flex flex-col min-w-0">
+            <span className="text-[9px] font-black text-slate-400 uppercase tracking-tighter">Secondary</span>
+            <span className="text-sm font-bold text-slate-600 tracking-wider truncate">
+              {order.shippingAddress.alternatephone}
+            </span>
+          </div>
+        </div>
+      )}
+
+      {/* Email Address */}
+      {order.shippingAddress?.email && (
+        <div className="flex items-center gap-4 p-4 bg-white rounded-2xl border border-slate-200/60 shadow-sm group hover:border-emerald-200 transition-colors">
+          <div className="w-10 h-10 rounded-xl bg-emerald-50 text-emerald-600 flex items-center justify-center shrink-0 group-hover:bg-emerald-600 group-hover:text-white transition-all">
+            <HiOutlineMail size={18} />
+          </div>
+          <div className="flex flex-col min-w-0">
+            <span className="text-[9px] font-black text-slate-400 uppercase tracking-tighter">Email Dispatch</span>
+            <span className="text-sm font-black text-slate-800 truncate">
+              {order.shippingAddress.email}
+            </span>
+          </div>
+        </div>
+      )}
+    </div>
+  </div>
+</div>
                               </div>
                             </div>
                           </td>

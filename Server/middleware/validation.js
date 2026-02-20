@@ -176,7 +176,7 @@ export const addressSchema = z.object({
         address: z.object({
             name: z.string().min(2).max(100).trim(),
             phone: z.string().regex(/^[6-9]\d{9}$/),
-            street: z.string().min(1).max(200).trim(),
+            address: z.string().min(1).max(200).trim(),
             city: z.string().min(1).max(100).trim(),
             state: z.string().min(1).max(100).trim(),
             pincode: z.string().regex(/^\d{6}$/),
@@ -214,28 +214,35 @@ export const orderIdAsIdSchema = z.object({
 
 // Place Order Schema
 export const placeOrderSchema = z.object({
-    body: z.object({
-        items: z.array(z.object({
-            productId: objectIdSchema,
-            name: z.string().max(200).optional(),
-            price: z.coerce.number().positive().max(10000000),
-            quantity: z.coerce.number().int().positive().max(100),
-            image: z.string().max(500).optional(),
-            sellerId: objectIdSchema.optional()
-        })).min(1, 'At least one item required').max(50, 'Max 50 items per order'),
-        totalAmount: z.coerce.number().positive().max(100000000),
-        shippingAddress: z.object({
-            name: z.string().min(1).max(100),
-            phone: z.string().min(10).max(15),
-            street: z.string().min(1).max(300),
-            city: z.string().min(1).max(100),
-            state: z.string().min(1).max(100),
-            pincode: z.string().min(5).max(10),
-            landmark: z.string().max(200).optional()
-        }),
-        image: z.string().max(500).optional(),
-        paymentId: z.string().max(100).optional()
-    })
+  body: z.object({
+
+    items: z.array(z.object({
+      productId: objectIdSchema,
+      quantity: z.coerce.number().int().positive().max(100),
+
+      giftMessage: z.string().max(500).optional(),
+      senderName: z.string().max(200).optional(),
+      receiverName: z.string().max(200).optional()
+
+    })).min(1),
+
+    shippingAddress: z.object({
+      name: z.string().min(1),
+      phone: z.string().min(10),
+
+      address: z.string().min(1),   // ✅ FIXED
+      city: z.string().min(1),
+      state: z.string().min(1),
+      pin: z.coerce.number()       // ✅ FIXED
+    }),
+
+    paymentId: z.string().min(1),
+
+    razorpayOrderId: z.string().min(1),
+
+    razorpay_signature: z.string().min(1)
+
+  })
 });
 
 // Search Query Schema - sanitizes and limits search input

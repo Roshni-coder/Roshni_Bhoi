@@ -1,5 +1,5 @@
 import React, { useMemo, useState, useEffect, useRef } from "react";
-import { FaAngleDown, FaAngleUp } from "react-icons/fa";
+import { FaAngleDown, FaAngleUp, FaGift } from "react-icons/fa";
 import { LuPackage, LuDownload, LuFileSpreadsheet, LuFileText, LuSearch, LuUser, LuMapPin, LuPhone, LuShoppingBag } from "react-icons/lu";
 import api from "../../utils/api";
 import { toast } from "react-toastify";
@@ -291,88 +291,173 @@ function ExpandedDetails({ order, formatINR, Mobile = false, theme }) {
 
   return (
     <tr className={Mobile ? "block" : ""}>
-      <Container {...innerProps}>
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-          {/* Shipping Info Card */}
-          <div className="bg-white rounded-[2rem] border border-slate-100 p-6 shadow-sm">
-            <h4 className="text-[10px] font-black text-slate-400 uppercase tracking-[0.2em] mb-6 flex items-center gap-2">
-              <LuMapPin className="w-4 h-4 text-indigo-500" /> Delivery Details
+  <Container {...innerProps}>
+    {/* Main Responsive Grid: Stacks on mobile, 1:2 ratio on desktop */}
+    <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 items-start">
+       <div className="lg:col-span-2 flex flex-col">
+        <div className="bg-white rounded-[2.5rem] border border-slate-200 overflow-hidden shadow-sm flex flex-col h-full">
+          {/* Header */}
+          <div className="px-8 py-5 bg-slate-50/80 border-b border-slate-100 flex justify-between items-center">
+            <h4 className="text-[11px] font-black text-slate-400 uppercase tracking-[0.25em] flex items-center gap-3">
+              <LuPackage className="w-5 h-5 text-orange-500" /> Manifest Summary
             </h4>
-            <div className="space-y-5">
-              <div className="flex gap-4">
-                <div className="w-10 h-10 rounded-2xl bg-slate-50 flex items-center justify-center text-slate-400 shrink-0">
-                  <LuUser size={20} />
-                </div>
-                <div>
-                    <p className="text-[10px] font-black text-slate-400 uppercase tracking-tighter">Recipient</p>
-                    <p className="text-sm font-black text-slate-900">{order.shippingAddress?.name}</p>
-                </div>
-              </div>
-              <div className="flex gap-4">
-                <div className="w-10 h-10 rounded-2xl bg-slate-50 flex items-center justify-center text-slate-400 shrink-0">
-                  <LuMapPin size={20} />
-                </div>
-                <div>
-                    <p className="text-[10px] font-black text-slate-400 uppercase tracking-tighter">Shipping Address</p>
-                    <p className="text-sm font-bold text-slate-600 leading-relaxed mt-1">
-                        {order.shippingAddress?.address}, {order.shippingAddress?.city}, {order.shippingAddress?.state} - <span className="font-black text-indigo-600">{order.shippingAddress?.pin}</span>
-                    </p>
-                </div>
-              </div>
-              <div className="flex gap-4">
-                <div className="w-10 h-10 rounded-2xl bg-slate-50 flex items-center justify-center text-slate-400 shrink-0">
-                  <LuPhone size={20} />
-                </div>
-                <div>
-                    <p className="text-[10px] font-black text-slate-400 uppercase tracking-tighter">Contact Number</p>
-                    <p className="text-sm font-black text-slate-900 tracking-widest">{order.shippingAddress?.phone}</p>
-                </div>
-              </div>
-            </div>
+            <span className="text-[10px] font-black text-slate-900 bg-white px-3 py-1 rounded-full border border-slate-200 shadow-sm">
+              {order.items.length} Items
+            </span>
           </div>
 
-          {/* Items Card */}
-          <div className="bg-white rounded-[2rem] border border-slate-100 overflow-hidden shadow-sm flex flex-col">
-            <div className="px-6 py-4 bg-slate-50/80 border-b border-slate-100 flex justify-between items-center">
-              <h4 className="text-[10px] font-black text-slate-400 uppercase tracking-widest flex items-center gap-2">
-                <LuPackage className="text-orange-500" /> Order Manifest ({order.items.length})
-              </h4>
-            </div>
-            <div className="flex-1 overflow-x-auto">
-              <table className="w-full text-sm">
-                <tbody className="divide-y divide-slate-50">
-                  {order.items.map((item) => (
-                    <tr key={item._id} className="hover:bg-slate-50 transition-colors">
-                      <td className="px-6 py-4">
-                        <div className="flex items-center gap-4">
-                          <img 
-                            src={item.productId?.images?.[0]?.url || ""} 
-                            className="w-12 h-12 rounded-2xl border border-slate-100 object-cover shrink-0 shadow-sm" 
-                            alt="" 
-                          />
-                          <div className="min-w-0">
-                            <p className="font-black text-slate-900 truncate max-w-[150px]">{item.productId?.title || "Product Removed"}</p>
-                            <p className="text-[10px] font-bold text-indigo-500">{formatINR(item.price)} per unit</p>
-                          </div>
+          {/* List Section (Better for responsiveness than a table) */}
+          <div className="divide-y divide-slate-100 flex-1">
+            {order.items.map((item) => (
+              <div key={item._id} className="group transition-all hover:bg-slate-50/30">
+                {/* Product Content */}
+                <div className="p-8 flex flex-col sm:flex-row sm:items-center justify-between gap-6">
+                  <div className="flex items-center gap-6">
+                    {/* Thumbnail with Overlay Qty */}
+                    <div className="relative shrink-0">
+                      <img
+                        src={item.productId?.images?.[0]?.url || "/placeholder.png"}
+                        className="w-20 h-24 rounded-2xl border-2 border-slate-100 object-cover shadow-sm transition-transform group-hover:scale-105"
+                        alt="Product"
+                      />
+                      <div className="absolute -top-3 -right-3 w-9 h-9 bg-slate-900 text-white rounded-xl flex items-center justify-center text-xs font-black border-4 border-white shadow-lg">
+                        {item.quantity}
+                      </div>
+                    </div>
+
+                    <div className="min-w-0">
+                      <p className="font-black text-slate-900 text-base leading-tight mb-2 truncate max-w-[250px]">
+                        {item.productId?.title || "Archived Item"}
+                      </p>
+                      <div className="flex items-center gap-3">
+                        <span className="text-xs font-bold text-indigo-600 bg-indigo-50 px-3 py-1 rounded-xl border border-indigo-100">
+                          {formatINR(item.price)}
+                        </span>
+                        <span className="text-[10px] font-black text-slate-400 uppercase tracking-tighter">
+                          Unit Price
+                        </span>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div className="text-left sm:text-right pt-4 sm:pt-0 border-t sm:border-t-0 border-slate-50">
+                    <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1">Item Subtotal</p>
+                    <p className="font-black text-slate-900 text-xl italic tracking-tight">
+                      {formatINR(item.price * item.quantity)}
+                    </p>
+                  </div>
+                </div>
+
+                {/* --- Boutique Gift Registry Card --- */}
+                {(item.giftMessage || item.senderName || item.receiverName) && (
+                  <div className="px-8 pb-8">
+                    <div className="bg-[#fdfbf7] border border-[#c5a059]/30 rounded-3xl p-6 relative overflow-hidden shadow-sm ring-4 ring-[#fdfbf7]">
+                      {/* Decorative Element */}
+                      <FaGift className="absolute -right-6 -bottom-6 text-[#c5a059]/10 text-7xl rotate-12" />
+                      
+                      <div className="flex items-center gap-3 mb-5 relative z-10">
+                        <div className="w-8 h-8 bg-[#c5a059]/10 rounded-xl flex items-center justify-center text-[#c5a059]">
+                          <FaGift size={14} />
                         </div>
-                      </td>
-                      <td className="px-4 py-4 text-center">
-                         <span className="inline-block px-2 py-1 bg-slate-100 rounded-lg text-xs font-black text-slate-600">x{item.quantity}</span>
-                      </td>
-                      <td className="px-6 py-4 text-right font-black text-slate-900">{formatINR(item.price * item.quantity)}</td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
+                        <span className="text-[10px] font-black text-[#c5a059] uppercase tracking-[0.2em]">Personal Gift Registry</span>
+                      </div>
+
+                      <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 mb-5 relative z-10">
+                        {item.receiverName && (
+                          <div className="flex flex-col">
+                            <span className="text-[9px] font-black text-slate-400 uppercase tracking-tighter mb-1">To (Recipient)</span>
+                            <span className="text-sm font-black text-[#1a3a32]">{item.receiverName}</span>
+                          </div>
+                        )}
+                        {item.senderName && (
+                          <div className="flex flex-col border-l border-[#c5a059]/20 pl-6">
+                            <span className="text-[9px] font-black text-slate-400 uppercase tracking-tighter mb-1">From (Sender)</span>
+                            <span className="text-sm font-black text-[#1a3a32]">{item.senderName}</span>
+                          </div>
+                        )}
+                      </div>
+
+                      {item.giftMessage && (
+                        <div className="pt-4 border-t border-[#c5a059]/15 relative z-10">
+                          <p className="text-[9px] font-black text-slate-400 uppercase tracking-tighter mb-2">Message</p>
+                          <p className="text-sm text-slate-700 italic font-serif leading-relaxed pl-4 border-l-2 border-[#c5a059]/40">
+                            “{item.giftMessage}”
+                          </p>
+                        </div>
+                      )}
+                    </div>
+                  </div>
+                )}
+              </div>
+            ))}
+          </div>
+
+          
+        </div>
+      </div>
+      {/* --- COLUMN 1: DISPATCH LOGISTICS (1/3 Width) --- */}
+      <div className="lg:col-span-1 space-y-6">
+        <div className="bg-white rounded-[2rem] border border-slate-200/60 p-8 shadow-sm relative overflow-hidden group">
+          {/* Background Watermark */}
+          <LuMapPin className="absolute -right-4 -top-4 text-slate-50 text-8xl rotate-12 group-hover:scale-110 transition-transform duration-500" />
+          
+          <h4 className="text-[11px] font-black text-slate-400 uppercase tracking-[0.25em] mb-8 flex items-center gap-3 relative z-10">
+            <LuMapPin className="w-5 h-5 text-indigo-500" /> Dispatch Info
+          </h4>
+
+          <div className="space-y-8 relative z-10">
+            {/* Recipient */}
+            <div className="flex gap-5">
+              <div className="w-12 h-12 rounded-2xl bg-indigo-50 text-indigo-600 flex items-center justify-center shrink-0 shadow-sm border border-indigo-100/50">
+                <LuUser size={22} />
+              </div>
+              <div>
+                <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1">Recipient</p>
+                <p className="text-base font-black text-slate-900">{order.shippingAddress?.name}</p>
+              </div>
             </div>
-            <div className="p-6 bg-slate-900 text-white flex justify-between items-center">
-                <span className="text-[10px] font-black uppercase tracking-[0.2em]">Net Payable</span>
-                <span className="text-xl font-black">{formatINR(order.totalAmount)}</span>
+
+            {/* Address */}
+            <div className="flex gap-5">
+              <div className="w-12 h-12 rounded-2xl bg-slate-50 text-slate-400 flex items-center justify-center shrink-0 border border-slate-100">
+                <LuMapPin size={22} />
+              </div>
+              <div>
+                <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1">Destination</p>
+                <p className="text-sm font-bold text-slate-600 leading-relaxed">
+                  {order.shippingAddress?.address}<br />
+                  <span className="text-slate-900">{order.shippingAddress?.city}, {order.shippingAddress?.state}</span>
+                </p>
+                <div className="mt-3">
+                  <span className="inline-block px-3 py-1 bg-slate-900 text-white text-[11px] font-black rounded-lg tracking-[0.15em]">
+                    PIN: {order.shippingAddress?.pin}
+                  </span>
+                </div>
+              </div>
+            </div>
+
+            {/* Contact */}
+            <div className="flex gap-5">
+              <div className="w-12 h-12 rounded-2xl bg-blue-50 text-blue-600 flex items-center justify-center shrink-0 border border-blue-100">
+                <LuPhone size={20} />
+              </div>
+              <div>
+                <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1">Direct Line</p>
+                <p className="text-sm font-black text-slate-900 tracking-widest">{order.shippingAddress?.phone}</p>
+                {order.shippingAddress?.alternatephone && (
+                   <p className="text-[11px] text-slate-400 font-bold mt-1 uppercase">Alt: {order.shippingAddress.alternatephone}</p>
+                )}
+              </div>
             </div>
           </div>
         </div>
-      </Container>
-    </tr>
+      </div>
+
+      {/* --- COLUMN 2: PRODUCT MANIFEST (2/3 Width) --- */}
+     
+    </div>
+  </Container>
+</tr>
   );
 }
 

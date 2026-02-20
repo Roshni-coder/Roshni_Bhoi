@@ -320,21 +320,99 @@ export const getProductsBySeller = async (req, res) => {
 };
 
 export const getAllOrders = async (req, res) => {
+
   try {
+
     const orders = await orderModel
       .find({})
       .populate("user", "name email")
-      .populate("items.productId", "title price brand")
+      .populate("items.productId", "title price images")
       .populate("items.sellerId", "name email nickName")
       .sort({ placedAt: -1 });
-    if (!orders.length) {
-      return res.status(404).json({ message: "No orders found" });
-    }
-    return res.status(200).json({ success: true, orders });
+
+    const formattedOrders = orders.map(order => ({
+
+      _id: order._id,
+
+      user: order.user,
+
+      totalAmount: order.totalAmount,
+
+      status: order.status,
+
+      placedAt: order.placedAt,
+
+      paymentId: order.paymentId,
+
+      image: order.image,
+
+      shippingAddress: {
+
+        name: order.shippingAddress?.name || "",
+
+        address: order.shippingAddress?.address || "",
+
+        city: order.shippingAddress?.city || "",
+
+        state: order.shippingAddress?.state || "",
+
+        pin: order.shippingAddress?.pin || "",
+
+        phone: order.shippingAddress?.phone || "",
+
+        alternatephone: order.shippingAddress?.alternatephone || ""
+
+      },
+
+      items: order.items.map(item => ({
+
+        _id: item._id,
+
+        productId: item.productId,
+
+        sellerId: item.sellerId,
+
+        name: item.name,
+
+        quantity: item.quantity,
+
+        price: item.price,
+
+        status: item.status,
+
+        giftMessage: item.giftMessage || "",
+
+        senderName: item.senderName || "",
+
+        receiverName: item.receiverName || ""
+
+      }))
+
+    }));
+
+
+    res.status(200).json({
+
+      success: true,
+
+      orders: formattedOrders
+
+    });
+
   } catch (error) {
-    console.error("Error fetching seller orders:", error);
-    res.status(500).json({ message: "Server error", error: error.message });
+
+    console.error(error);
+
+    res.status(500).json({
+
+      success: false,
+
+      message: "Failed to fetch orders"
+
+    });
+
   }
+
 };
 
 export const getDashboardStats = async (req, res) => {

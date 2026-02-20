@@ -86,6 +86,10 @@ function Cartpage() {
                       onUpdateQuantity={handleUpdateQuantity}
                       isSelected={selectedItems.includes(item.product._id)}
                       onSelect={handleSelect}
+                      /* ADD THESE */
+  giftMessage={item.giftMessage}
+  senderName={item.senderName}
+  receiverName={item.receiverName}
                     />
                   ))
                 ) : (

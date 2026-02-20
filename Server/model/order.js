@@ -14,17 +14,33 @@ const orderSchema = new mongoose.Schema({
       price: { type: Number, required: true },
       sellerId: { type: mongoose.Schema.Types.ObjectId, ref: "Seller", required: true },
       status: { type: String, default: "Pending" }, // Per-item status
+       // ✅ MOVE HERE
+      giftMessage: {
+        type: String,
+        default: ""
+      },
+
+      senderName: {
+        type: String,
+        default: ""
+      },
+
+      receiverName: {
+        type: String,
+        default: ""
+      },
     },
   ],
   totalAmount: { type: Number, required: true },
   shippingAddress: {
     name: String,
-    pin: Number,
+    pin: String,
     city: String,
     state: String,
     phone: String,
     alternatephone: String,
     address: String,
+    alternatephone: String
   },
   status: { type: String, default: "Pending" },
   placedAt: { type: Date, default: Date.now },

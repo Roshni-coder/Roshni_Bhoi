@@ -18,6 +18,8 @@ import {
   createSafeSearchRegex,
   sanitizeForMongo
 } from "../utils/errorHandler.js";
+import Cart from "../model/cart.js";
+ import crypto from "crypto";
 
 /**
  * Get list of all available products
@@ -96,128 +98,262 @@ export const getAllProductsByCategory = async (req, res) => {
  * - Validates stock availability
  * - Checks seller availability
  */
+// export const placeorder = async (req, res) => {
+//   try {
+//     // SECURITY: Use authenticated userId from middleware, NOT from body
+//     const userId = req.userId;
+
+//     if (!userId) {
+//       return res.status(401).json({
+//         success: false,
+//         message: "Authentication required"
+//       });
+//     }
+
+//     const { items, totalAmount, shippingAddress, image, paymentId } = req.body;
+
+//     // Validate required fields
+//     if (!items?.length) {
+//       return res.status(400).json({
+//         success: false,
+//         message: "Order items are required"
+//       });
+//     }
+
+//     if (!shippingAddress) {
+//       return res.status(400).json({
+//         success: false,
+//         message: "Shipping address is required"
+//       });
+//     }
+
+//     if (!totalAmount || totalAmount <= 0) {
+//       return res.status(400).json({
+//         success: false,
+//         message: "Valid total amount is required"
+//       });
+//     }
+
+//     // Validate stock for all items
+//     const productsToUpdate = [];
+//     for (const item of items) {
+//       // SECURITY: Validate productId format
+//       if (!isValidObjectId(item.productId)) {
+//         return res.status(400).json({
+//           success: false,
+//           message: `Invalid product ID format`
+//         });
+//       }
+
+//       const product = await addproductmodel.findById(item.productId).populate('sellerId');
+//       if (!product) {
+//         return res.status(404).json({
+//           success: false,
+//           message: `Product not found: ${item.name || 'Unknown'}`
+//         });
+//       }
+
+//       // Check seller status
+//       const seller = product.sellerId;
+//       if (seller && (seller.holidayMode || seller.status === 'Suspended' || seller.isBlocked)) {
+//         return res.status(400).json({
+//           success: false,
+//           message: `Seller for "${product.title}" is currently unavailable.`
+//         });
+//       }
+
+//       // Validate quantity
+//       const quantity = parseInt(item.quantity) || 0;
+//       if (quantity <= 0 || quantity > 100) {
+//         return res.status(400).json({
+//           success: false,
+//           message: `Invalid quantity for ${product.title}`
+//         });
+//       }
+
+//       if (product.stock < quantity) {
+//         return res.status(400).json({
+//           success: false,
+//           message: `Insufficient stock for ${product.title}. Available: ${product.stock}`
+//         });
+//       }
+
+//       productsToUpdate.push({ product, quantity });
+//     }
+
+//   const normalizedAddress = {
+//       name: shippingAddress.name || shippingAddress.fullName || "Recipient",
+//       phone: shippingAddress.phone || shippingAddress.phoneNumber || "",
+//       alternatephone: shippingAddress.alternatephone || "",
+//       address: shippingAddress.address || "",
+//       city: shippingAddress.city || "",
+//       state: shippingAddress.state || "",
+//       pin: Number(shippingAddress.pin || shippingAddress.pincode || 0),
+//     };
+
+//     // 2. Create the Order
+//    const newOrder = new orderModel({
+//   user: userId,
+
+//   items: items.map(item => ({
+//     productId: item.productId,
+//     name: item.name,
+//     quantity: item.quantity,
+//     price: item.price,
+//     sellerId: item.sellerId,
+
+//     giftMessage: item.giftMessage,
+//     senderName: item.senderName,
+//     receiverName: item.receiverName
+//   })),
+
+//   totalAmount,
+//   shippingAddress: normalizedAddress,
+//   image,
+//   paymentId: paymentId || null
+// });
+
+
+//     await newOrder.save();
+//    console.log("📦 ORDER ADDRESS SAVED:", normalizedAddress);
+
+//     // Deduct stock
+//     for (const { product, quantity } of productsToUpdate) {
+//       product.stock -= quantity;
+//       await product.save();
+//     }
+
+//     res.status(201).json({
+//       success: true,
+//       message: "Order placed successfully",
+//       order: newOrder
+//     });
+//   } catch (error) {
+//     handleError(res, error, "Failed to place order");
+//   }
+// };
+
 export const placeorder = async (req, res) => {
   try {
-    // SECURITY: Use authenticated userId from middleware, NOT from body
+
     const userId = req.userId;
 
-    if (!userId) {
-      return res.status(401).json({
-        success: false,
-        message: "Authentication required"
-      });
-    }
-
-    const { items, totalAmount, shippingAddress, image, paymentId } = req.body;
-
-    // Validate required fields
-    if (!items?.length) {
-      return res.status(400).json({
-        success: false,
-        message: "Order items are required"
-      });
-    }
-
-    if (!shippingAddress) {
-      return res.status(400).json({
-        success: false,
-        message: "Shipping address is required"
-      });
-    }
-
-    if (!totalAmount || totalAmount <= 0) {
-      return res.status(400).json({
-        success: false,
-        message: "Valid total amount is required"
-      });
-    }
-
-    // Validate stock for all items
-    const productsToUpdate = [];
-    for (const item of items) {
-      // SECURITY: Validate productId format
-      if (!isValidObjectId(item.productId)) {
-        return res.status(400).json({
-          success: false,
-          message: `Invalid product ID format`
-        });
-      }
-
-      const product = await addproductmodel.findById(item.productId).populate('sellerId');
-      if (!product) {
-        return res.status(404).json({
-          success: false,
-          message: `Product not found: ${item.name || 'Unknown'}`
-        });
-      }
-
-      // Check seller status
-      const seller = product.sellerId;
-      if (seller && (seller.holidayMode || seller.status === 'Suspended' || seller.isBlocked)) {
-        return res.status(400).json({
-          success: false,
-          message: `Seller for "${product.title}" is currently unavailable.`
-        });
-      }
-
-      // Validate quantity
-      const quantity = parseInt(item.quantity) || 0;
-      if (quantity <= 0 || quantity > 100) {
-        return res.status(400).json({
-          success: false,
-          message: `Invalid quantity for ${product.title}`
-        });
-      }
-
-      if (product.stock < quantity) {
-        return res.status(400).json({
-          success: false,
-          message: `Insufficient stock for ${product.title}. Available: ${product.stock}`
-        });
-      }
-
-      productsToUpdate.push({ product, quantity });
-    }
-
-  const normalizedAddress = {
-      name: shippingAddress.name || shippingAddress.fullName || "Recipient",
-      phone: shippingAddress.phone || shippingAddress.phoneNumber || "",
-      alternatephone: shippingAddress.alternatephone || "",
-      address: shippingAddress.address || "",
-      city: shippingAddress.city || "",
-      state: shippingAddress.state || "",
-      pin: Number(shippingAddress.pin || shippingAddress.pincode || 0),
-    };
-
-    // 2. Create the Order
-    const newOrder = new orderModel({
-      user: userId,
+    const {
       items,
-      totalAmount,
-      shippingAddress: normalizedAddress, // Saved using schema keys
-      image,
-      paymentId: paymentId || null,
-    });
+      shippingAddress,
+      paymentId,
+      razorpayOrderId,
+      razorpay_signature
+    } = req.body;
 
-    await newOrder.save();
-   console.log("📦 ORDER ADDRESS SAVED:", normalizedAddress);
+    // VERIFY SIGNATURE
+    const body = razorpayOrderId + "|" + paymentId;
 
-    // Deduct stock
-    for (const { product, quantity } of productsToUpdate) {
+    const expectedSignature = crypto
+      .createHmac("sha256", process.env.RAZORPAY_KEY_SECRET)
+      .update(body.toString())
+      .digest("hex");
+
+    if (expectedSignature !== razorpay_signature) {
+      return res.status(400).json({
+        success: false,
+        message: "Invalid payment signature"
+      });
+    }
+
+    let finalItems = [];
+    let totalAmount = 0;
+
+    for (const item of items) {
+
+      const product = await addproductmodel.findById(item.productId);
+
+      if (!product) continue;
+
+      const quantity = Number(item.quantity);
+
+      finalItems.push({
+
+        productId: product._id,
+
+        name: product.title,
+
+        quantity,
+
+        price: product.price,
+
+        sellerId: product.sellerId,
+
+        giftMessage: item.giftMessage || "",
+
+        senderName: item.senderName || "",
+
+        receiverName: item.receiverName || ""
+
+      });
+
+      totalAmount += product.price * quantity;
+
+      // deduct stock
       product.stock -= quantity;
+
       await product.save();
     }
 
-    res.status(201).json({
-      success: true,
-      message: "Order placed successfully",
-      order: newOrder
+    const order = await orderModel.create({
+
+      user: userId,
+
+      items: finalItems,
+
+      totalAmount,
+
+      shippingAddress: {
+
+        name: shippingAddress.name,
+
+        phone: shippingAddress.phone,
+
+        address: shippingAddress.address,
+
+        city: shippingAddress.city,
+
+        state: shippingAddress.state,
+
+        pin: shippingAddress.pin
+
+      },
+
+      paymentId,
+
+      status: "Paid",
+
+      placedAt: new Date()
+
     });
-  } catch (error) {
-    handleError(res, error, "Failed to place order");
+
+    res.status(201).json({
+
+      success: true,
+
+      order
+
+    });
+
+  }
+  catch (error) {
+
+    console.error(error);
+
+    res.status(500).json({
+
+      success: false,
+
+      message: "Order failed"
+
+    });
   }
 };
-
 /**
  * Get User's Orders
  * 

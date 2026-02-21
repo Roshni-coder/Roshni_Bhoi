@@ -113,7 +113,7 @@ function InventoryReports() {
       {/* HEADER SECTION */}
       <div className="flex flex-col lg:flex-row justify-between items-start lg:items-center gap-6">
         <div>
-          <h1 className="text-3xl font-black text-slate-800 tracking-tight">Stock Intelligence</h1>
+          <h1 className="text-3xl font-black text-slate-800 tracking-tight">Inventory Reports</h1>
           <p className="text-sm text-slate-500 font-medium italic">Managed Inventory • {data.summary.totalProducts} Active SKUs</p>
         </div>
         <div className="flex flex-wrap gap-3 w-full lg:w-auto">

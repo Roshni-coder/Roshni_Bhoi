@@ -16,7 +16,14 @@ export const addToBulkCart = async (req, res) => {
     try {
 
         const userId = req.user?.id || req.userId;
-        const { productId, quantity } = req.body;
+
+        const {
+            productId,
+            quantity,
+            giftMessage,
+            senderName,
+            receiverName
+        } = req.body;
 
         if (!userId)
             return res.status(401).json({
@@ -32,13 +39,6 @@ export const addToBulkCart = async (req, res) => {
                 message: "Invalid quantity"
             });
 
-        if (qty > MAX_BULK_QTY)
-            return res.status(400).json({
-                success: false,
-                message: `Max ${MAX_BULK_QTY} allowed`
-            });
-
-
         const product = await Product.findById(productId);
 
         if (!product)
@@ -46,7 +46,6 @@ export const addToBulkCart = async (req, res) => {
                 success: false,
                 message: "Product not found"
             });
-
 
         let bulkCart = await BulkCart.findOne({ userId });
 
@@ -56,28 +55,30 @@ export const addToBulkCart = async (req, res) => {
                 items: []
             });
 
-
-        const existingItem = bulkCart.items.find(
-            item => item.productId.toString() === productId
-        );
-
-
-        if (!existingItem && bulkCart.items.length >= MAX_BULK_ITEMS)
-            return res.status(400).json({
-                success: false,
-                message: "Bulk cart limit reached"
-            });
-
+        const existingItem =
+            bulkCart.items.find(
+                item => item.productId.toString() === productId
+            );
 
         const unitPrice = product.price;
         const totalPrice = unitPrice * qty;
 
-
         if (existingItem) {
 
             existingItem.quantity += qty;
+
             existingItem.totalPrice =
                 existingItem.unitPrice * existingItem.quantity;
+
+            // ✅ UPDATE FIELDS
+            if (giftMessage !== undefined)
+                existingItem.giftMessage = giftMessage;
+
+            if (senderName !== undefined)
+                existingItem.senderName = senderName;
+
+            if (receiverName !== undefined)
+                existingItem.receiverName = receiverName;
 
         }
         else {
@@ -86,16 +87,27 @@ export const addToBulkCart = async (req, res) => {
 
                 productId,
                 sellerId: product.sellerId,
+
                 productName: product.title,
+
                 image: product.images?.[0]?.url || "",
+
                 quantity: qty,
+
                 unitPrice,
-                totalPrice
+
+                totalPrice,
+
+                // ✅ SAVE THESE
+                giftMessage: giftMessage || "",
+
+                senderName: senderName || "",
+
+                receiverName: receiverName || ""
 
             });
 
         }
-
 
         await bulkCart.save();
 
@@ -112,7 +124,6 @@ export const addToBulkCart = async (req, res) => {
     }
 
 };
-
 
 
 /**

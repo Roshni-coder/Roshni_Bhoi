@@ -27,7 +27,22 @@ const bulkCartItemSchema = new mongoose.Schema({
 
     unitPrice: Number,
 
-    totalPrice: Number
+    totalPrice: Number,
+     // ✅ ADD THESE
+    giftMessage: {
+        type: String,
+        default: ""
+    },
+
+    senderName: {
+        type: String,
+        default: ""
+    },
+
+    receiverName: {
+        type: String,
+        default: ""
+    }
 
 });
 

@@ -58,7 +58,13 @@ const fetchBulkCart = useCallback(async () => {
 
 
 // ADD BULK CART
-const addToBulkCart = async (product, quantity) => {
+const addToBulkCart = async (
+  product,
+  quantity,
+  giftMessage = "",
+  senderName = "",
+  receiverName = ""
+) => {
 
   if (!isLoggedin) {
 
@@ -75,7 +81,14 @@ const addToBulkCart = async (product, quantity) => {
     const res = await api.post("/api/bulk-cart", {
 
       productId: product._id,
-      quantity
+
+      quantity,
+
+      giftMessage,
+
+      senderName,
+
+      receiverName
 
     });
 
@@ -87,7 +100,8 @@ const addToBulkCart = async (product, quantity) => {
 
     }
 
-  } catch (err) {
+  }
+  catch (err) {
 
     toast.error(err.response?.data?.message || "Failed");
 

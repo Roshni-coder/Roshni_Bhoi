@@ -107,7 +107,6 @@ const location = useLocation();
 
 const handleAddToBulkCart = async () => {
 
-    // 🔴 CASE 1: USER NOT LOGGED IN
     if (!isLoggedin) {
 
         toast.warning("Please login to request bulk quote");
@@ -119,7 +118,14 @@ const handleAddToBulkCart = async () => {
                 pendingBulkCart: {
 
                     productId: product._id,
-                    quantity
+
+                    quantity,
+
+                    giftMessage,
+
+                    senderName,
+
+                    receiverName
 
                 },
 
@@ -133,11 +139,21 @@ const handleAddToBulkCart = async () => {
 
     }
 
-
-    // 🟢 CASE 2: USER LOGGED IN
     try {
 
-        await addToBulkCart(product, quantity);
+        await addToBulkCart(
+
+            product,
+
+            quantity,
+
+            giftMessage,
+
+            senderName,
+
+            receiverName
+
+        );
 
         toast.success("Added to Bulk Cart");
 

@@ -29,6 +29,7 @@ const bulkQuoteSchema = new mongoose.Schema({
         state: String,
         pincode: String
     },
+    
 
     deliveryDate: { type: Date, required: true },
     additionalNotes: { type: String },
@@ -40,7 +41,23 @@ const bulkQuoteSchema = new mongoose.Schema({
         image: String,
         quantity: Number,
         unitPrice: Number,
-        totalPrice: Number
+        totalPrice: Number,
+        
+    // ✅ ADD THESE
+    giftMessage: {
+        type: String,
+        default: ""
+    },
+
+    senderName: {
+        type: String,
+        default: ""
+    },
+
+    receiverName: {
+        type: String,
+        default: ""
+    }
     }],
 
     totalAmount: { type: Number, required: true },

@@ -206,67 +206,127 @@ const SellerBulkQuotes = () => {
                       </div>
                     </div>
 
-                    {/* Right: Items Table */}
-                    <div className="lg:col-span-8 overflow-hidden flex flex-col">
-                      <h4 className="text-[10px] font-black text-slate-400 uppercase tracking-[0.15em] mb-4">Requested Products</h4>
-                      <div className="border border-slate-100 rounded-2xl overflow-x-auto shadow-sm">
-                        <table className="w-full text-left">
-                          <thead className="bg-slate-50/50 text-[10px] uppercase font-black text-slate-400 border-b border-slate-100">
-                            <tr>
-                              <th className="px-6 py-3">Product Name</th>
-                              <th className="px-6 py-3 text-center">Qty</th>
-                              <th className="px-6 py-3 text-right">Quote (Sub)</th>
-                            </tr>
-                          </thead>
-                          <tbody className="divide-y divide-slate-100">
-                            {quote.items.map((item, idx) => (
-                              <tr key={idx} className="hover:bg-slate-50/30 transition-colors">
-                                <td className="px-6 py-4">
-                                  <div className="flex items-center gap-4">
-                                    <div className="w-12 h-12 rounded-xl bg-slate-100 overflow-hidden border border-slate-200">
-                                      <img
-                                        src={item.image || "https://via.placeholder.com/150"}
-                                        alt={item.productName}
-                                        className="w-full h-full object-cover"
-                                        onError={(e) => {
-                                          e.target.src = "https://via.placeholder.com/150";
-                                        }}
-                                      />
+                 {/* Right: Items Table */}
+<div className="lg:col-span-8 flex flex-col">
+  <div className="flex items-center justify-between mb-5">
+    <div>
+      <h4 className="text-xs font-bold text-slate-900 uppercase tracking-wider">Requested Products</h4>
+      <p className="text-[11px] text-slate-500 mt-0.5">{quote.items.length} items in this quote</p>
+    </div>
+  </div>
 
-                                    </div>
-                                    <div>
-                                      <p className="text-sm font-bold text-slate-800 line-clamp-1">{item.productId?.title || item.productName}</p>
-                                      <p className="text-[10px] text-slate-400 font-medium">₹{item.unitPrice} per unit</p>
-                                    </div>
-                                  </div>
-                                </td>
-                                <td className="px-6 py-4 text-center">
-                                  <span className="text-xs font-black text-slate-700 bg-slate-100 px-2.5 py-1 rounded-lg">x{item.quantity}</span>
-                                </td>
-                                <td className="px-6 py-4 text-right">
-                                  <p className="text-sm font-black text-slate-900">₹{item.totalPrice.toLocaleString()}</p>
-                                </td>
-                              </tr>
-                            ))}
-                          </tbody>
-                        </table>
-                      </div>
+  <div className="bg-white border border-slate-200 rounded-2xl overflow-hidden shadow-sm">
+    <table className="w-full text-left border-collapse">
+      <thead>
+        <tr className="bg-slate-50/80 border-b border-slate-200">
+          <th className="px-6 py-4 text-[11px] uppercase font-bold text-slate-500 tracking-wider">Product Details</th>
+          <th className="px-6 py-4 text-[11px] uppercase font-bold text-slate-500 tracking-wider text-center">Quantity</th>
+          <th className="px-6 py-4 text-[11px] uppercase font-bold text-slate-500 tracking-wider text-right">Total Price</th>
+        </tr>
+      </thead>
+      <tbody className="divide-y divide-slate-100">
+        {quote.items.map((item, idx) => (
+          <tr key={idx} className="group hover:bg-slate-50/50 transition-all duration-200">
+            <td className="px-6 py-5">
+              <div className="flex flex-col gap-4">
+                {/* Product Info */}
+                <div className="flex items-start gap-4">
+                  <div className="relative w-14 h-14 flex-shrink-0">
+                    <img
+                      src={item.image || "https://via.placeholder.com/150"}
+                      alt={item.productName}
+                      className="w-full h-full object-cover rounded-xl border border-slate-200 shadow-sm"
+                    />
+                  </div>
+                  <div className="flex flex-col">
+                    <span className="text-sm font-bold text-slate-800 group-hover:text-indigo-600 transition-colors">
+                      {item.productId?.title || item.productName}
+                    </span>
+                    <span className="text-[11px] text-slate-500 font-medium mt-0.5">
+                      Unit Price: <span className="text-slate-700">₹{item.unitPrice.toLocaleString()}</span>
+                    </span>
+                  </div>
+                </div>
 
-                      {/* Notes & Summary */}
-                      <div className="mt-6 grid grid-cols-1 md:grid-cols-2 gap-6 items-end">
-                        <div className="bg-amber-50/50 p-4 rounded-xl border border-amber-100/50 flex gap-3">
-                          <FiInfo className="text-amber-500 mt-1 flex-shrink-0" />
-                          <div>
-                            <p className="text-[10px] font-black text-amber-600 uppercase mb-1">Buyer Notes</p>
-                            <p className="text-slate-600 text-xs italic leading-relaxed">"{quote.additionalNotes || "No extra instructions provided."}"</p>
-                          </div>
-                        </div>
-                        <div className="text-right">
-                          <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1">Requested Total</p>
-                          <p className="text-4xl font-black text-indigo-600 tracking-tighter">₹{quote.totalAmount.toLocaleString()}</p>
-                        </div>
-                      </div>
+                {/* ✅ GIFT MESSAGE - Card Style */}
+                {item.giftMessage && (
+                  <div className="ml-0 md:ml-16 bg-indigo-50/40 border border-indigo-100 rounded-xl p-3 relative">
+                    <div className="absolute -top-2 left-3 bg-white px-2 py-0.5 rounded-full border border-indigo-100 shadow-sm">
+                      <p className="text-[9px] font-bold text-indigo-600 uppercase tracking-tighter">Gift Note</p>
                     </div>
+                    
+                    <p className="text-xs text-slate-700 leading-relaxed italic mt-1.5">
+                      "{item.giftMessage}"
+                    </p>
+
+                    <div className="flex items-center gap-3 mt-2 pt-2 border-t border-indigo-100/50">
+                      {item.senderName && (
+                        <div className="flex items-center gap-1">
+                          <span className="text-[10px] text-indigo-400 font-medium uppercase">From:</span>
+                          <span className="text-[11px] font-bold text-slate-700">{item.senderName}</span>
+                        </div>
+                      )}
+                      {item.receiverName && (
+                        <div className="flex items-center gap-1 border-l border-indigo-200 pl-3">
+                          <span className="text-[10px] text-indigo-400 font-medium uppercase">To:</span>
+                          <span className="text-[11px] font-bold text-slate-700">{item.receiverName}</span>
+                        </div>
+                      )}
+                    </div>
+                  </div>
+                )}
+              </div>
+            </td>
+
+            <td className="px-6 py-5 text-center vertical-top">
+              <div className="inline-flex items-center justify-center bg-slate-900 text-white text-[11px] font-bold px-3 py-1 rounded-full shadow-sm">
+                {item.quantity} units
+              </div>
+            </td>
+
+            <td className="px-6 py-5 text-right vertical-top">
+              <span className="text-sm font-bold text-slate-900 tracking-tight">
+                ₹{item.totalPrice.toLocaleString()}
+              </span>
+            </td>
+          </tr>
+        ))}
+      </tbody>
+    </table>
+  </div>
+
+  {/* Notes & Summary Footer */}
+  <div className="mt-8 grid grid-cols-1 md:grid-cols-2 gap-8 items-start">
+    {/* Buyer Notes with Memo Look */}
+    <div className="bg-slate-50 rounded-2xl p-5 border border-slate-200/60 relative overflow-hidden">
+        <div className="absolute top-0 left-0 w-1 h-full bg-amber-400"></div>
+        <div className="flex items-center gap-2 mb-3">
+            <FiInfo className="text-amber-500 w-4 h-4" />
+            <span className="text-[10px] font-black text-slate-400 uppercase tracking-[0.1em]">Buyer Instructions</span>
+        </div>
+        <p className="text-slate-600 text-xs italic leading-relaxed">
+            {quote.additionalNotes ? `"${quote.additionalNotes}"` : "No special instructions provided by the buyer."}
+        </p>
+    </div>
+
+    {/* Grand Total Card */}
+    <div className="bg-indigo-600 rounded-2xl p-6 text-white shadow-lg shadow-indigo-100 flex flex-col items-end relative overflow-hidden">
+      {/* Decorative Circle */}
+      <div className="absolute -bottom-6 -right-6 w-24 h-24 bg-white/10 rounded-full blur-2xl"></div>
+      
+      <span className="text-[10px] font-bold uppercase tracking-[0.2em] text-indigo-200 mb-1">
+        Final Quote Total
+      </span>
+      <div className="flex items-baseline gap-1">
+        <span className="text-xl font-medium text-indigo-200">₹</span>
+        <span className="text-4xl font-black tracking-tighter">
+            {quote.totalAmount.toLocaleString()}
+        </span>
+      </div>
+      <p className="text-[10px] text-indigo-100/60 mt-2">All prices are inclusive of taxes & shipping</p>
+    </div>
+  </div>
+</div>
 
                   </div>
                 </div>

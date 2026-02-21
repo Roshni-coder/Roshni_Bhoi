@@ -5,6 +5,7 @@ import { handleError } from "../utils/errorHandler.js";
 
 
 export const createBulkQuote = async (req, res) => {
+
   try {
 
     const userId = req.user.id;
@@ -27,7 +28,6 @@ export const createBulkQuote = async (req, res) => {
         message: "Bulk cart empty"
       });
 
-    // ✅ GROUP ITEMS BY SELLER
     const sellerMap = {};
 
     bulkCart.items.forEach(item => {
@@ -37,13 +37,33 @@ export const createBulkQuote = async (req, res) => {
       if (!sellerMap[sellerId])
         sellerMap[sellerId] = [];
 
-      sellerMap[sellerId].push(item);
+      sellerMap[sellerId].push({
+
+        productId: item.productId,
+
+        productName: item.productName,
+
+        image: item.image,
+
+        quantity: item.quantity,
+
+        unitPrice: item.unitPrice,
+
+        totalPrice: item.totalPrice,
+
+        // ✅ INCLUDE THESE
+        giftMessage: item.giftMessage || "",
+
+        senderName: item.senderName || "",
+
+        receiverName: item.receiverName || ""
+
+      });
 
     });
 
     const createdQuotes = [];
 
-    // ✅ CREATE SEPARATE QUOTE PER SELLER
     for (const sellerId in sellerMap) {
 
       const sellerItems = sellerMap[sellerId];
@@ -63,8 +83,9 @@ export const createBulkQuote = async (req, res) => {
       const newQuote = new BulkQuote({
 
         quoteId,
-        sellerId: sellerId,
-        // ✅ IMPORTANT FIX
+
+        sellerId,
+
         userId,
 
         companyName,
@@ -77,6 +98,7 @@ export const createBulkQuote = async (req, res) => {
         additionalNotes,
 
         items: sellerItems,
+
         totalAmount
 
       });
@@ -87,7 +109,6 @@ export const createBulkQuote = async (req, res) => {
 
     }
 
-    // clear cart
     await BulkCart.findOneAndDelete({ userId });
 
     res.json({
@@ -102,8 +123,8 @@ export const createBulkQuote = async (req, res) => {
     handleError(res, err, "Submit bulk quote failed");
 
   }
-};
 
+};
 // controller/bulkQuoteController.js
 
 export const getSellerBulkQuotes = async (req, res) => {

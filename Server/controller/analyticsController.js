@@ -439,153 +439,119 @@ export const exportData = async (req, res) => {
 };
 
 // Get Inventory Reports
+// controller/analyticsController.js
+// controller/analyticsController.js
+
 export const getInventoryReports = async (req, res) => {
   try {
-    const sellerId = req.sellerId || req.body.sellerId;
+    const sellerId = req.sellerId; // From authseller middleware
 
-    // Fetch all products for this seller
-    const products = await addproductmodel.find({ sellerId })
-      .populate("categoryname", "categoryname");
+    // 1. Fetch all products belonging to this seller
+    const products = await addproductmodel.find({ sellerId }).lean();
 
-    // Calculate inventory summary
-    const totalProducts = products.length;
-    const inStock = products.filter(p => p.availability === "In Stock").length;
-    const lowStock = products.filter(p => p.availability === "Low Stock").length;
-    const outOfStock = products.filter(p => p.availability === "Out of Stock").length;
-    const inventoryValue = products.reduce((acc, p) => acc + (p.stock * p.price), 0);
+    // 2. Define Time Ranges
+    const now = new Date();
+    const startOfToday = new Date(now.setHours(0, 0, 0, 0));
+    
+    const startOfWeek = new Date();
+    startOfWeek.setDate(startOfWeek.getDate() - 7);
+    
+    const startOfMonth = new Date();
+    startOfMonth.setMonth(startOfMonth.getMonth() - 1);
 
-    // Get orders from last 30 days to calculate product movement
-    const thirtyDaysAgo = new Date();
-    thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30);
-
-    const recentOrders = await orderModel.find({
+    // 3. Fetch all relevant orders
+    const orders = await orderModel.find({
       "items.sellerId": sellerId,
-      placedAt: { $gte: thirtyDaysAgo }
-    });
+      placedAt: { $gte: startOfMonth } // Get last 30 days
+    }).lean();
 
-    // Calculate sales per product
-    const productSales = {};
-    const productLastSold = {};
+    // 4. Processing Logic
+    const stats = {
+      daily: {},   // { productId: quantity }
+      weekly: {},
+      monthly: {},
+      allTimeSold: new Set()
+    };
 
-    recentOrders.forEach(order => {
+    orders.forEach(order => {
+      const orderDate = new Date(order.placedAt);
+      
       order.items.forEach(item => {
         if (item.sellerId?.toString() === sellerId?.toString()) {
-          const productId = item.productId?.toString();
-          if (productId) {
-            productSales[productId] = (productSales[productId] || 0) + item.quantity;
-            // Track last sold date
-            if (!productLastSold[productId] || order.placedAt > productLastSold[productId]) {
-              productLastSold[productId] = order.placedAt;
-            }
+          const pId = item.productId?.toString();
+          const qty = Number(item.quantity) || 0;
+
+          stats.allTimeSold.add(pId);
+
+          // Monthly
+          stats.monthly[pId] = (stats.monthly[pId] || 0) + qty;
+
+          // Weekly
+          if (orderDate >= startOfWeek) {
+            stats.weekly[pId] = (stats.weekly[pId] || 0) + qty;
+          }
+
+          // Daily
+          if (orderDate >= startOfToday) {
+            stats.daily[pId] = (stats.daily[pId] || 0) + qty;
           }
         }
       });
     });
 
-    // Get all orders to find historical last sold dates for products not sold recently
-    const allOrders = await orderModel.find({
-      "items.sellerId": sellerId
-    }).sort({ placedAt: -1 });
-
-    allOrders.forEach(order => {
-      order.items.forEach(item => {
-        if (item.sellerId?.toString() === sellerId?.toString()) {
-          const productId = item.productId?.toString();
-          if (productId && !productLastSold[productId]) {
-            productLastSold[productId] = order.placedAt;
-          }
-        }
-      });
-    });
-
-    // Build low stock products list
-    const lowStockProducts = products
-      .filter(p => p.availability === "Low Stock" || p.availability === "Out of Stock")
-      .map(p => ({
-        _id: p._id,
+    // 5. Build Comprehensive Product Report
+    const productReport = products.map(p => {
+      const id = p._id.toString();
+      return {
+        _id: id,
         name: p.title,
-        image: p.images?.[0]?.url || null,
-        sku: p._id.toString().slice(-8).toUpperCase(),
-        stock: p.stock,
-        minStock: 5,
-        category: p.categoryname?.categoryname || "Uncategorized"
-      }))
-      .sort((a, b) => a.stock - b.stock)
-      .slice(0, 10);
-
-    // Build top moving (fast selling) products
-    const topMovingProducts = products
-      .map(p => {
-        const soldCount = productSales[p._id.toString()] || 0;
-        return {
-          _id: p._id,
-          name: p.title,
-          image: p.images?.[0]?.url || null,
-          soldCount,
-          growth: soldCount > 0 ? Math.min(Math.round((soldCount / 10) * 100), 100) : 0,
-          stock: p.stock
-        };
-      })
-      .filter(p => p.soldCount > 0)
-      .sort((a, b) => b.soldCount - a.soldCount)
-      .slice(0, 5);
-
-    // Build slow moving products (products with no or very few sales)
-    const slowMovingProducts = products
-      .map(p => {
-        const productId = p._id.toString();
-        const soldCount = productSales[productId] || 0;
-        const lastSoldDate = productLastSold[productId];
-        const daysSinceLastSale = lastSoldDate 
-          ? Math.floor((new Date() - new Date(lastSoldDate)) / (1000 * 60 * 60 * 24))
-          : 999;
-
-        return {
-          _id: p._id,
-          name: p.title,
-          image: p.images?.[0]?.url || null,
-          stock: p.stock,
-          soldCount,
-          lastSold: lastSoldDate 
-            ? new Date(lastSoldDate).toLocaleDateString('en-IN', { day: 'numeric', month: 'short' })
-            : 'Never',
-          daysSinceLastSale: daysSinceLastSale > 30 ? 30 : daysSinceLastSale
-        };
-      })
-      .filter(p => p.stock > 0 && p.soldCount === 0)
-      .sort((a, b) => b.daysSinceLastSale - a.daysSinceLastSale)
-      .slice(0, 5);
-
-    // Category breakdown
-    const categoryBreakdown = {};
-    products.forEach(p => {
-      const catName = p.categoryname?.categoryname || "Uncategorized";
-      if (!categoryBreakdown[catName]) {
-        categoryBreakdown[catName] = { count: 0, totalStock: 0, value: 0 };
-      }
-      categoryBreakdown[catName].count++;
-      categoryBreakdown[catName].totalStock += p.stock;
-      categoryBreakdown[catName].value += p.stock * p.price;
+        image: p.images?.[0]?.url,
+        currentStock: p.stock,
+        price: p.price,
+        dailySale: stats.daily[id] || 0,
+        weeklySale: stats.weekly[id] || 0,
+        monthlySale: stats.monthly[id] || 0,
+        isUnsold: !stats.allTimeSold.has(id),
+        value: p.stock * p.price
+      };
     });
+
+    // 6. Categorize for Frontend
+    const fastMoving = [...productReport]
+      .filter(p => p.monthlySale > 0)
+      .sort((a, b) => b.monthlySale - a.monthlySale)
+      .slice(0, 5);
+
+    const slowMoving = [...productReport]
+      .filter(p => p.monthlySale > 0 && p.monthlySale < 5)
+      .sort((a, b) => a.monthlySale - b.monthlySale)
+      .slice(0, 5);
+
+    const unsoldProducts = productReport.filter(p => p.isUnsold);
+
+    const lowStockAlerts = productReport.filter(p => p.currentStock < 10);
+
+    const totalInventoryValue = productReport.reduce((acc, p) => acc + p.value, 0);
 
     res.status(200).json({
       success: true,
       data: {
-        totalProducts,
-        inStock,
-        lowStock,
-        outOfStock,
-        inventoryValue,
-        lowStockProducts,
-        topMovingProducts,
-        slowMovingProducts,
-        categoryBreakdown: Object.entries(categoryBreakdown)
-          .map(([name, data]) => ({ name, ...data }))
-          .sort((a, b) => b.value - a.value)
+        summary: {
+          totalProducts: products.length,
+          inventoryValue: totalInventoryValue,
+          lowStockCount: lowStockAlerts.length,
+          unsoldCount: unsoldProducts.length
+        },
+        productReport, // The full list with Daily/Weekly/Monthly
+        fastMoving,
+        slowMoving,
+        unsoldProducts,
+        lowStockAlerts
       }
     });
+
   } catch (error) {
-    console.error("Inventory Reports Error:", error);
-    res.status(500).json({ success: false, message: "Server Error" });
+    console.error("Inventory Report Error:", error);
+    res.status(500).json({ success: false, message: "Failed to generate report" });
   }
 };

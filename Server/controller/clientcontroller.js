@@ -233,9 +233,134 @@ export const getAllProductsByCategory = async (req, res) => {
 //   }
 // };
 
-export const placeorder = async (req, res) => {
-  try {
+// export const placeorder = async (req, res) => {
+//   try {
 
+//     const userId = req.userId;
+
+//     const {
+//       items,
+//       shippingAddress,
+//       paymentId,
+//       razorpayOrderId,
+//       razorpay_signature
+//     } = req.body;
+
+//     // VERIFY SIGNATURE
+//     const body = razorpayOrderId + "|" + paymentId;
+
+//     const expectedSignature = crypto
+//       .createHmac("sha256", process.env.RAZORPAY_KEY_SECRET)
+//       .update(body.toString())
+//       .digest("hex");
+
+//     if (expectedSignature !== razorpay_signature) {
+//       return res.status(400).json({
+//         success: false,
+//         message: "Invalid payment signature"
+//       });
+//     }
+
+//     let finalItems = [];
+//     let totalAmount = 0;
+
+//     for (const item of items) {
+
+//       const product = await addproductmodel.findById(item.productId);
+
+//       if (!product) continue;
+
+//       const quantity = Number(item.quantity);
+
+//       finalItems.push({
+
+//         productId: product._id,
+
+//         name: product.title,
+
+//         quantity,
+
+//         price: product.price,
+
+//         sellerId: product.sellerId,
+
+//         giftMessage: item.giftMessage || "",
+
+//         senderName: item.senderName || "",
+
+//         receiverName: item.receiverName || ""
+
+//       });
+
+//       totalAmount += product.price * quantity;
+
+//       // deduct stock
+//       product.stock -= quantity;
+
+//       await product.save();
+//     }
+
+//     const order = await orderModel.create({
+
+//       user: userId,
+
+//       items: finalItems,
+
+//       totalAmount,
+
+//       shippingAddress: {
+
+//         name: shippingAddress.name,
+
+//         phone: shippingAddress.phone,
+
+//         address: shippingAddress.address,
+
+//         city: shippingAddress.city,
+
+//         state: shippingAddress.state,
+
+//         pin: shippingAddress.pin
+
+//       },
+
+//       paymentId,
+
+//       status: "Paid",
+
+//       placedAt: new Date()
+
+//     });
+
+//     res.status(201).json({
+
+//       success: true,
+
+//       order
+
+//     });
+
+//   }
+//   catch (error) {
+
+//     console.error(error);
+
+//     res.status(500).json({
+
+//       success: false,
+
+//       message: "Order failed"
+
+//     });
+//   }
+// };
+import mongoose from "mongoose";
+
+export const placeorder = async (req, res) => {
+  const session = await mongoose.startSession();
+  session.startTransaction();
+
+  try {
     const userId = req.userId;
 
     const {
@@ -246,7 +371,7 @@ export const placeorder = async (req, res) => {
       razorpay_signature
     } = req.body;
 
-    // VERIFY SIGNATURE
+    // ✅ Verify Razorpay signature
     const body = razorpayOrderId + "|" + paymentId;
 
     const expectedSignature = crypto
@@ -266,91 +391,76 @@ export const placeorder = async (req, res) => {
 
     for (const item of items) {
 
-      const product = await addproductmodel.findById(item.productId);
-
-      if (!product) continue;
-
       const quantity = Number(item.quantity);
 
+      // ✅ ATOMIC STOCK CHECK + DEDUCTION
+      const updatedProduct = await addproductmodel.findOneAndUpdate(
+        {
+          _id: item.productId,
+          stock: { $gte: quantity }   // Only update if stock >= quantity
+        },
+        {
+          $inc: { stock: -quantity }  // Deduct stock safely
+        },
+        {
+          new: true,
+          session
+        }
+      );
+
+      if (!updatedProduct) {
+        await session.abortTransaction();
+        session.endSession();
+
+        return res.status(400).json({
+          success: false,
+          message: "Insufficient stock for product"
+        });
+      }
+
       finalItems.push({
-
-        productId: product._id,
-
-        name: product.title,
-
+        productId: updatedProduct._id,
+        name: updatedProduct.title,
         quantity,
-
-        price: product.price,
-
-        sellerId: product.sellerId,
-
+        price: updatedProduct.price,
+        sellerId: updatedProduct.sellerId,
         giftMessage: item.giftMessage || "",
-
         senderName: item.senderName || "",
-
         receiverName: item.receiverName || ""
-
       });
 
-      totalAmount += product.price * quantity;
-
-      // deduct stock
-      product.stock -= quantity;
-
-      await product.save();
+      totalAmount += updatedProduct.price * quantity;
     }
 
-    const order = await orderModel.create({
-
+    // ✅ Create order after stock deduction success
+    const order = await orderModel.create([{
       user: userId,
-
       items: finalItems,
-
       totalAmount,
-
-      shippingAddress: {
-
-        name: shippingAddress.name,
-
-        phone: shippingAddress.phone,
-
-        address: shippingAddress.address,
-
-        city: shippingAddress.city,
-
-        state: shippingAddress.state,
-
-        pin: shippingAddress.pin
-
-      },
-
+      shippingAddress,
       paymentId,
-
       status: "Paid",
-
       placedAt: new Date()
+    }], { session });
 
-    });
+    await session.commitTransaction();
+    session.endSession();
 
-    res.status(201).json({
-
+    return res.status(201).json({
       success: true,
-
-      order
-
+      order: order[0]
     });
 
-  }
-  catch (error) {
+  } catch (error) {
+
+    await session.abortTransaction();
+    session.endSession();
 
     console.error(error);
 
     res.status(500).json({
-
       success: false,
-
       message: "Order failed"
-
     });
   }
 };
